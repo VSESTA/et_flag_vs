@@ -1,0 +1,11 @@
+{
+  "name": "et_flag_vs",
+  "version": "1.0.0",
+  "description": "Projecto final Flag Virgilio Sesta",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Virgilio Sesta",
+  "license": "ISC"
+}
