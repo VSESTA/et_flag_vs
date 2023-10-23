@@ -2,25 +2,29 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 20, 2023 at 09:01 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: localhost
+-- Tempo de geração: 23-Out-2023 às 21:12
+-- Versão do servidor: 10.4.28-MariaDB
+-- versão do PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
--- Database: `expense_tracker`
+-- Banco de dados: `expense_tracker`
 --
-CREATE DATABASE IF NOT EXISTS `expense_tracker` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `expense_tracker`;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `category`
+-- Estrutura da tabela `category`
 --
 
 CREATE TABLE `category` (
@@ -35,7 +39,7 @@ CREATE TABLE `category` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `expense`
+-- Estrutura da tabela `expense`
 --
 
 CREATE TABLE `expense` (
@@ -56,7 +60,7 @@ CREATE TABLE `expense` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `expense_detail`
+-- Estrutura da tabela `expense_detail`
 --
 
 CREATE TABLE `expense_detail` (
@@ -68,7 +72,7 @@ CREATE TABLE `expense_detail` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `expense_user`
+-- Estrutura da tabela `expense_user`
 --
 
 CREATE TABLE `expense_user` (
@@ -84,7 +88,7 @@ CREATE TABLE `expense_user` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `status`
+-- Estrutura da tabela `status`
 --
 
 CREATE TABLE `status` (
@@ -98,7 +102,7 @@ CREATE TABLE `status` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Estrutura da tabela `user`
 --
 
 CREATE TABLE `user` (
@@ -114,17 +118,17 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- Índices para tabelas despejadas
 --
 
 --
--- Indexes for table `category`
+-- Índices para tabela `category`
 --
 ALTER TABLE `category`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `expense`
+-- Índices para tabela `expense`
 --
 ALTER TABLE `expense`
   ADD PRIMARY KEY (`id`),
@@ -134,13 +138,13 @@ ALTER TABLE `expense`
   ADD KEY `expense_ibfk_4` (`updated_by`);
 
 --
--- Indexes for table `expense_detail`
+-- Índices para tabela `expense_detail`
 --
 ALTER TABLE `expense_detail`
   ADD KEY `expense_detail_ibfk_1` (`id`);
 
 --
--- Indexes for table `expense_user`
+-- Índices para tabela `expense_user`
 --
 ALTER TABLE `expense_user`
   ADD PRIMARY KEY (`id`),
@@ -149,57 +153,57 @@ ALTER TABLE `expense_user`
   ADD KEY `expense_user_ibfk_2` (`status_id`);
 
 --
--- Indexes for table `status`
+-- Índices para tabela `status`
 --
 ALTER TABLE `status`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user`
+-- Índices para tabela `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de tabelas despejadas
 --
 
 --
--- AUTO_INCREMENT for table `category`
+-- AUTO_INCREMENT de tabela `category`
 --
 ALTER TABLE `category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `expense`
+-- AUTO_INCREMENT de tabela `expense`
 --
 ALTER TABLE `expense`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `expense_user`
+-- AUTO_INCREMENT de tabela `expense_user`
 --
 ALTER TABLE `expense_user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `status`
+-- AUTO_INCREMENT de tabela `status`
 --
 ALTER TABLE `status`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT de tabela `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for dumped tables
+-- Restrições para despejos de tabelas
 --
 
 --
--- Constraints for table `expense`
+-- Limitadores para a tabela `expense`
 --
 ALTER TABLE `expense`
   ADD CONSTRAINT `expense_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`) ON UPDATE CASCADE,
@@ -208,16 +212,20 @@ ALTER TABLE `expense`
   ADD CONSTRAINT `expense_ibfk_4` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`) ON UPDATE NO ACTION;
 
 --
--- Constraints for table `expense_detail`
+-- Limitadores para a tabela `expense_detail`
 --
 ALTER TABLE `expense_detail`
   ADD CONSTRAINT `expense_detail_ibfk_1` FOREIGN KEY (`id`) REFERENCES `expense` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `expense_user`
+-- Limitadores para a tabela `expense_user`
 --
 ALTER TABLE `expense_user`
   ADD CONSTRAINT `expense_user_ibfk_1` FOREIGN KEY (`expense_id`) REFERENCES `expense` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `expense_user_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `expense_user_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
