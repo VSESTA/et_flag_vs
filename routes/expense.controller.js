@@ -1,12 +1,12 @@
-const { getAllExpenses } = require('../models/expense.model');
+const { getAllExpenses, addNewExpense } = require('../models/expense.model');
 
 function httpGetAllExpenses(req, res){
-    console.log(getAllExpenses());
     return res.status(200).json(getAllExpenses());
 }
 
 function httpAddNewExpense(req, res){
-    return;
+    const newExpense = addNewExpense(req, res)
+    return res.status(201).json(newExpense);
 }
 
 function httpUpdateExpense(req, res){
