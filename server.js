@@ -8,14 +8,6 @@ const expenseRouter = require('./routes/expense.router');
 //inicializar ficheiro .env
 dotenv.config();
 
-//criar conexao bd
-db.connect((err) =>{
-    if(err){
-        throw err;
-    }
-    console.log('connected!')
-});
-
 //criar servidor com express
 const app = express();
 

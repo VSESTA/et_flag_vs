@@ -15,40 +15,63 @@ const expenses = [
     }
 ];
 
-function getAllExpenses(){
+async function getAllExpenses(){
     const sql = "SELECT * FROM EXPENSE";
-    db.query(sql,(err, result) =>{
-        if(err){
-            throw err;
-        }
-        console.log(result);
-    })
-    return expenses;
+
+    return db.execute(sql);
 
 }
 
-function addNewExpense(req,res){
-    let expense = { 
-        name: "Luz",
-        date: new Date("October 23, 2023"),
-        category_id : 1,
-        total_amount: 100.23,
-        is_split: 0,
-        status_id: 1,
-        notes: "Luz trimestre agosto - outubro 2023",
-        created_at: new Date("October 23, 2023"),
-        created_by: 1
-    };
-    let sql = "INSERT INTO expense SET ?";
-    let query = db.query(sql, expense, (err, result) =>{
-        if(err) {
-            throw err;
-        }
-        res.send()
-    }); 
+async function getExpenseById(id){
+    const sql=`SELECT * FROM EXPENSE WHERE id = ${id}`;
+
+    return db.execute(sql);
+
+}
+
+async function addNewExpense(expense){
+    let sql = `INSERT INTO expense(name, date, category_id, total_amount, is_split, status_id, notes, created_by) VALUES(
+    "${expense.name}",
+    "${expense.date}",
+    ${expense.category_id},
+    ${expense.total_amount},
+    ${expense.is_split},
+    ${expense.status_id},
+    "${expense.notes}",
+    ${expense.created_by})`;
+
+    const [newExpense,_] = await db.execute(sql);
+
+    return newExpense;
+}
+
+async function updateExpense(id, expense){
+    let sql = `UPDATE expense SET 
+    name = "${expense.name}",
+    date= "${expense.date}",
+    category_id = ${expense.category_id},
+    total_amount = ${expense.total_amount},
+    is_split = ${expense.is_split},
+    status_id = ${expense.status_id},
+    notes = "${expense.notes}",
+    updated_by = ${expense.updated_by}
+    WHERE
+    id = ${id}`;
+
+    const [expenseDb,_] = await db.execute(sql);
+    return expenseDb;
+}
+
+async function deleteExpense(id){
+    let sql = `DELETE FROM expense WHERE id =${id}`;
+    let [expense,_] = await db.execute(sql);
+    return expense;
 }
 
 module.exports = {
     getAllExpenses,
-    addNewExpense
+    getExpenseById,
+    addNewExpense,
+    updateExpense,
+    deleteExpense
 };

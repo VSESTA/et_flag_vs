@@ -1,4 +1,5 @@
-const mysql = require('mysql');
+//const mysql = require('mysql');
+const mysql = require('mysql2');
 const dotenv = require('dotenv');
 
 //inicializar ficheiro .env
@@ -6,7 +7,7 @@ dotenv.config();
 
 //criar a conexão à BD
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host :      process.env.DB_HOST,
     database :  process.env.DB_NAME,
     user:       process.env.DB_USER,
@@ -14,4 +15,6 @@ const db = mysql.createConnection({
     
 });
 
-module.exports = db;
+
+
+module.exports = db.promise();
