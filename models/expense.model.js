@@ -17,15 +17,15 @@ const expenses = [
 
 async function getAllExpenses(){
     const sql = "SELECT * FROM EXPENSE";
-
-    return db.execute(sql);
+    const [result, ...info] = await db.execute(sql);
+    return result;
 
 }
 
 async function getExpenseById(id){
     const sql=`SELECT * FROM EXPENSE WHERE id = ${id}`;
-
-    return db.execute(sql);
+    const [result, ...info] = await db.execute(sql);
+    return result;
 
 }
 
@@ -40,9 +40,8 @@ async function addNewExpense(expense){
     "${expense.notes}",
     ${expense.created_by})`;
 
-    const [newExpense,_] = await db.execute(sql);
-
-    return newExpense;
+    const [newExpense,...info] = await db.execute(sql);
+    return newExpense.insertId;
 }
 
 async function updateExpense(id, expense){

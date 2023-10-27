@@ -1,14 +1,47 @@
 const bcrypt=require('bcryptjs');
 
-const {createUser, getUserByEmail} = require('../models/user.model');
+const {createUser, checkExistingUserByEmail} = require('../models/user.model');
 
-function login(req, res){}
+async function login(req, res){
+     //obter os parâmetros do request
+     let {email, password} = req.body;
+
+     //validações
+     if(!email || !password){
+        return res.status(400).json({
+            success: false,
+            error: "Required fields are missing"
+        });
+     }
+     //verificar se o email corresponde a algum utilizador na bd
+     let userIsAlreadyRegistered = await checkExistingUserByEmail(email);
+
+     if(!userIsAlreadyRegistered){
+        return res.status(404).json({
+            success: false,
+            error: "User is not registered yet"
+        });
+     }
+     try {
+        let user = await getUserByEmail(email);
+        let comparison = await bcrypt.compare(password,user.password);
+     } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "Internal error"
+     }
+
+
+}
 function logout(req, res){}
+
 async function register(req, res){
     //obter os parâmetros do request
     let errors =[];
     let {name, email, password, password2} = req.body;
-console.log(name, email, password, password2)
+    
+    //validações
     if(!name || !email || !password || !password2){
         errors.push("Required fields missing");
     }
@@ -28,8 +61,8 @@ console.log(name, email, password, password2)
         })
     }else{
         //Verificar se user já existe
-        let userIsAlreadyRegistered = await getUserByEmail(email);
-        
+        let userIsAlreadyRegistered = await checkExistingUserByEmail(email);
+
         if(userIsAlreadyRegistered){
             return res.status(409).json({
                 success: false,
@@ -44,10 +77,10 @@ console.log(name, email, password, password2)
             }
 
             //hash password
-            bcrypt.genSalt(10,(err, salt) =>{
+            bcrypt.genSalt(10,(error, salt) =>{
                 bcrypt.hash(newUser.password, salt, async (err, hash) =>{
                     if(err){
-                        throw error;
+                        throw err;
                     }
                     newUser.password = hash;
                     try {

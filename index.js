@@ -21,4 +21,4 @@ app.use(express.json());
 app.use('/expenses',expenseRouter);
 app.use('/auth',authRouter);
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT);

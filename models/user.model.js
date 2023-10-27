@@ -3,23 +3,28 @@ const db = require('../db/db');
 async function getUserById(id){
     const sql=`SELECT * FROM user WHERE id = ${id}`;
     const [result, ...info] = await db.execute(sql);
-    return result;
+    return result[0];
 };
 
 async function getUserByEmail(email){
-    const sql=`SELECT * FROM user WHERE email = "${email}"`;
-    const [user, ...info] = await db.execute(sql);
-    return user;
+    const sql=`SELECT * FROM user WHERE email = ${email}`;
+    const [result, ...info] = await db.execute(sql);
+    return result[0];
+};
+
+async function checkExistingUserByEmail(email){
+    const sql=`SELECT COUNT(*) numberOfUsers FROM user WHERE email = "${email}"`;
+    const [count, ...info] = await db.execute(sql);
+    return count[0].numberOfUsers > 0;
 };
 
 async function createUser(user){
-    let sql = `INSERT INTO user(name, email, password, is_active, created_at)
+    let sql = `INSERT INTO user(name, email, password, is_active)
     VALUES(
         "${user.name}",
         "${user.email}",
         "${user.password}",
-        true,
-        ${Date.now}
+        "1"
     )`;
 
     const [result, ...info] = await db.execute(sql);
@@ -36,5 +41,7 @@ async function logout(userid){};
 
 module.exports = {
     createUser, 
+    checkExistingUserByEmail,
+    getUserById,
     getUserByEmail
 }

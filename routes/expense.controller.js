@@ -50,7 +50,6 @@ async function httpGetExpenseById(req, res, next){
     };
     try {
        let newExpenseId = await addNewExpense(newExpense);
-console.log(newExpenseId)
        let newDbExpense = await getExpenseById(newExpenseId.insertId);
 
         return res.status(201).json({
