@@ -1,6 +1,8 @@
 const bcrypt=require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const {createUser, checkExistingUserByEmail} = require('../models/user.model');
+const {createUser, checkExistingUserByEmail, getUserByEmail} = require('../models/user.model');
+const { response } = require('express');
 
 async function login(req, res){
      //obter os parâmetros do request
@@ -24,17 +26,50 @@ async function login(req, res){
      }
      try {
         let user = await getUserByEmail(email);
-        let comparison = await bcrypt.compare(password,user.password);
-     } catch (error) {
+        let isValid = await bcrypt.compare(password,user.password);
+       
+        if(!isValid){
+            return res.status(422).json({
+                success: false,
+                error:"Email or password incorrect"
+            });
+        }
+
+        /*Informação guardada no token */
+        const payload ={
+            user_id: user.id,
+            email: user.email,
+            isAdmin: user.is_admin
+        }
+        const token = jwt.sign(payload,process.env.JWT_SECRET_KEY) ;
+
+        return res.status('200').header({"Authorization": "Bearer "+token}).json({
+            success: true,
+            data: {"Authorization": "Bearer "+token}
+        })
+    } catch (error) {
         console.log(error);
         return res.status(500).json({
             success: false,
             error: "Internal error"
-     }
-
-
+        });
+    }
 }
-function logout(req, res){}
+function logout(req, res){
+
+    const authHeader = req.header('Authorization');
+    if(!authHeader){
+        console.log('aqui')
+        return res.status(204).json({
+            success: true
+        });
+    }
+    res.removeHeader('Authorization');
+
+    return res.status(200).json({
+        success: true
+    })
+}
 
 async function register(req, res){
     //obter os parâmetros do request

@@ -7,7 +7,7 @@ async function getUserById(id){
 };
 
 async function getUserByEmail(email){
-    const sql=`SELECT * FROM user WHERE email = ${email}`;
+    const sql=`SELECT * FROM user WHERE email = "${email}"`;
     const [result, ...info] = await db.execute(sql);
     return result[0];
 };

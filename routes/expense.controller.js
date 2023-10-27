@@ -1,6 +1,7 @@
 const { getAllExpenses,getExpenseById, addNewExpense, updateExpense, deleteExpense } = require('../models/expense.model');
 
 async function httpGetAllExpenses(req, res, next){
+    //TO-DO:adicionar validacao do authorization
     try{
         const expenses = await getAllExpenses();
         return res.status(200).json({
@@ -19,6 +20,7 @@ async function httpGetAllExpenses(req, res, next){
 }
 
 async function httpGetExpenseById(req, res, next){
+    //TO-DO:adicionar validacao do authorization
     let id = req.params.id;
     try{
         const expense = await getExpenseById(id);
@@ -37,6 +39,7 @@ async function httpGetExpenseById(req, res, next){
 }
 
  async function httpAddNewExpense(req, res, next){
+    //TO-DO:adicionar validacao do authorization
 
     let newExpense = {
         name:           req.body.name,
@@ -67,6 +70,7 @@ async function httpGetExpenseById(req, res, next){
 }
 
 async function httpUpdateExpense(req, res){
+    //TO-DO:adicionar validacao do authorization
     let id = req.params.id;
     let expense = {
         name:           req.body.name,
@@ -100,6 +104,7 @@ async function httpUpdateExpense(req, res){
     }
 }
 async function httpDeleteExpense(req,res){
+    //TO-DO:adicionar validacao do authorization
     let id = req.params.id;
 
     try {
