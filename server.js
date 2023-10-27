@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const db = require('./db/db');
 
 const expenseRouter = require('./routes/expense.router');
+const authRouter = require('./routes/auth.router');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -18,5 +19,6 @@ app.use(express.json());
 
 //usar as rotas
 app.use('/expenses',expenseRouter);
+app.use('/auth',authRouter);
 
 app.listen(process.env.PORT || 3000);

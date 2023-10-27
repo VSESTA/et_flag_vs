@@ -2,13 +2,17 @@ const { getAllExpenses,getExpenseById, addNewExpense, updateExpense, deleteExpen
 
 async function httpGetAllExpenses(req, res, next){
     try{
-        const [expenses,_] = await getAllExpenses();
-        return res.status(200).json(expenses);
+        const expenses = await getAllExpenses();
+        return res.status(200).json({
+            success: true,
+            data: expenses
+        });
 
     }catch(error){
         console.log(error);
         return res.status(500).json({
-            "error": "Internal error"
+            success: false,
+            error: "Internal error"
         })
     }
 
@@ -17,13 +21,17 @@ async function httpGetAllExpenses(req, res, next){
 async function httpGetExpenseById(req, res, next){
     let id = req.params.id;
     try{
-        const [expense,_] = await getExpenseById(id);
-        return res.status(200).json(expense);
+        const expense = await getExpenseById(id);
+        return res.status(200).json({
+            success: true,
+            data: expense
+        });
 
     }catch(error){
         console.log(error);
         return res.status(500).json({
-            "error": "Internal error"
+            success: false,
+            error: "Internal error"
         })
     }
 }
@@ -41,12 +49,19 @@ async function httpGetExpenseById(req, res, next){
         created_by:     req.body.created_by
     };
     try {
-       newExpense = await addNewExpense(newExpense);
-        return res.status(201).json(newExpense);
+       let newExpenseId = await addNewExpense(newExpense);
+console.log(newExpenseId)
+       let newDbExpense = await getExpenseById(newExpenseId.insertId);
+
+        return res.status(201).json({
+            success: true,
+            data: newDbExpense
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            "error": "Internal error"
+            success: false,
+            error: "Internal error"
         })
         
     }
@@ -66,12 +81,22 @@ async function httpUpdateExpense(req, res){
     }
 
     try {
+        let expenseX = await getExpenseById(id);
+        if(expenseX.length===0){  
+            return res.status(404).json({
+                success: false,
+                error: "No expense found"
+            });
+        }
+
         expense = await updateExpense(id, expense);
+
         return res.status(202).json(expense);
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            "error": "Internal error"
+            success: false,
+            error: "Internal error"
         })
     }
 }
@@ -80,11 +105,15 @@ async function httpDeleteExpense(req,res){
 
     try {
         expense = await deleteExpense(id);
-        return res.status(202).json(id);
+        return res.status(202).json({
+            success: true,
+            id: id
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            "error": "Internal error"
+            success: false,
+            error: "Internal error"
         })
     }
 }
