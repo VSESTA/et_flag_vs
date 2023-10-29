@@ -42,11 +42,11 @@ async function login(req, res){
             isAdmin: user.is_admin
         }
         const token = jwt.sign(payload,process.env.JWT_SECRET_KEY) ;
-
-        return res.status('200').header({"Authorization": "Bearer "+token}).json({
+        res.header({"Authorization": "Bearer "+token}).render('dashboard',{payload})
+        /*return res.status('200').header({"Authorization": "Bearer "+token}).json({
             success: true,
             data: {"Authorization": "Bearer "+token}
-        })
+        })*/
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -59,7 +59,6 @@ function logout(req, res){
 
     const authHeader = req.header('Authorization');
     if(!authHeader){
-        console.log('aqui')
         return res.status(204).json({
             success: true
         });
@@ -78,31 +77,48 @@ async function register(req, res){
     
     //validações
     if(!name || !email || !password || !password2){
-        errors.push("Required fields missing");
+        errors.push({message: "Required fields missing"});
     }
 
     if(password.length <3 || password2.length<3){
-        errors.push("Password requires a minimum of 3 characters")
+        errors.push({message: "Password requires a minimum of 3 characters"})
     }
 
     if(password !== password2){
-        errors.push("Passwords do not match")
+        errors.push({message: "Passwords do not match"})
     }
 
     if(errors.length > 0){
-        return res.status(400).json({
+        res.render('register',{
+            errors,
+            name,
+            email,
+            password,
+            password2
+        })
+        //caso decida fazer em react
+        /*return res.status(400).json({
             success: false,
             errors: errors
-        })
+        })*/
     }else{
         //Verificar se user já existe
         let userIsAlreadyRegistered = await checkExistingUserByEmail(email);
 
         if(userIsAlreadyRegistered){
-            return res.status(409).json({
+            errors.push({ message: 'User is already registered'});
+            res.render('register',{
+                errors,
+                name,
+                email,
+                password,
+                password2
+            })
+            //caso decida fazer em react
+            /*return res.status(409).json({
                 success: false,
                 error: "User is already registered"
-            })
+            })*/
         }else{
             //criar user
             const newUser = {
@@ -120,10 +136,13 @@ async function register(req, res){
                     newUser.password = hash;
                     try {
                         let newUserDB = await createUser(newUser);
-                        res.status(201).json({
+                        res.redirect('/auth/login');
+
+                        //caso decida via react
+                        /*return res.status(201).json({
                             success: true,
                             data: newUserDB
-                        })
+                        })*/
                     } catch (error) {
                         return res.status(500).json({
                             success: false,
