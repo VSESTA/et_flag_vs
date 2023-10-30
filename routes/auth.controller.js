@@ -38,11 +38,17 @@ async function login(req, res){
         /*Informação guardada no token */
         const payload ={
             user_id: user.id,
+            name: user.name,
             email: user.email,
             isAdmin: user.is_admin
         }
         const token = jwt.sign(payload,process.env.JWT_SECRET_KEY) ;
-        res.header({"Authorization": "Bearer "+token}).render('dashboard',{payload})
+        //criar um cookie e fazer redirect para o dashboard
+        res
+            .cookie("access_token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+            }).status(200).redirect('../dashboard');
         /*return res.status('200').header({"Authorization": "Bearer "+token}).json({
             success: true,
             data: {"Authorization": "Bearer "+token}
@@ -56,18 +62,11 @@ async function login(req, res){
     }
 }
 function logout(req, res){
-
-    const authHeader = req.header('Authorization');
-    if(!authHeader){
-        return res.status(204).json({
-            success: true
-        });
-    }
-    res.removeHeader('Authorization');
-
-    return res.status(200).json({
-        success: true
-    })
+    
+    return res
+        .clearCookie("access_token")
+        .status(200)
+        .redirect('../');
 }
 
 async function register(req, res){
