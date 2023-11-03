@@ -6,7 +6,9 @@ const cookieParser = require("cookie-parser");
 const db = require('./db/db');
 const authorization = require('./middleware/authorization');
 const expenseRouter = require('./routes/expense.router');
+const userRouter = require('./routes/user.router');
 const authRouter = require('./routes/auth.router');
+const { getCurrentDate } = require('./utils/dates.utils');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -34,14 +36,33 @@ app.use(express.urlencoded({ extended: false}));
 
 //usar as rotas
 app.get('/', (req,res) =>{
-    res.render('home')
+    const token = req.cookies.access_token;
+    if(!token){
+        res.render('home')
+    }
+    else{
+        res.redirect('/dashboard');
+    }
+
 });
 app.get('/dashboard', authorization, (req,res) =>{
     const {userId, userName, isAdmin} = req;
     res.render('dashboard', {userName});
-    res.render()
 });
+
+app.get('/newexpense', authorization, (req,res) =>{
+    const {userId, userName, isAdmin} = req;
+    let expense = {
+        name: "",
+        date: getCurrentDate(),
+        category: 1,
+        is_split: false
+    }
+    res.render('expensedetail', {userId, userName, expense});
+})
+
 app.use('/expenses',expenseRouter);
+app.use('/user', userRouter);
 app.use('/auth',authRouter);
 
 app.listen(process.env.PORT);

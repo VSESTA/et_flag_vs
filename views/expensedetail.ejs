@@ -1,0 +1,63 @@
+<%- include ("./menu"); %>
+<div class="container">
+    <h1>New Expense</h1>
+    <%- include ("./flash-messages"); %>
+    <form action="/expenses/" method="POST">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="p-3 py-5">
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="name" class="labels">Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="enter name" value="<%=expense.name%>">
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="date" class="labels">Date</label>
+                        <input type="datetime" name="date" class="form-control" placeholder="enter date" value="<%=expense.date%>">
+                    </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="category" class="labels">Category</label>
+                        <select class="form-select form-control" name="category" id="category">
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                          <option>4</option>
+                          <option>5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="amount" class="labels">Total Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input type="number" name="amount" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="notes" class="labels">Notes</label>
+                        <textarea class="form-control" name="notes" id="notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="is_split" id="is_split" value="<%= expense.is_split %>">
+                        <label class="form-check-label" for="is_split">Split expense?</label>
+                      </div>
+                </div>
+            </div>
+            <% if(expense.is_split) {%>
+                <div class="mt-5"><input type="submit" class="btn btn-primary profile-button" value="Next Step"></div>
+                <% }else{ %>
+                <div class="mt-5"><input type="submit" class="btn btn-primary profile-button" value="Save Expense"></div>                   
+                <%} %>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>

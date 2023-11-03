@@ -1,4 +1,5 @@
 const db = require('../db/db');
+const {getCurrentDate} = require('../utils/dates.utils')
 
 async function getUserById(id){
     const sql=`SELECT * FROM user WHERE id = ${id}`;
@@ -31,17 +32,25 @@ async function createUser(user){
     return result;
 };
 
-async function updateUser(id, user){};
+async function updateUser(id, user){
+    let sql = `UPDATE user 
+                SET name = "${user.name}",
+                email = "${user.email}", 
+                password = "${user.password}", 
+                is_active = "1", 
+                updated_at = ${getCurrentDate()}
+                WHERE id = ${id}`;
+
+    const [result, ...info] = db.execute(sql); 
+    return result;
+};
 
 async function updateUserStatus(id, user){};
-
-async function login(username, password){};
-
-async function logout(userid){};
 
 module.exports = {
     createUser, 
     checkExistingUserByEmail,
     getUserById,
-    getUserByEmail
+    getUserByEmail,
+    updateUser
 }
