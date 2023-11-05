@@ -9,6 +9,8 @@ const expenseRouter = require('./routes/expense.router');
 const userRouter = require('./routes/user.router');
 const authRouter = require('./routes/auth.router');
 const { getCurrentDate } = require('./utils/dates.utils');
+const { httpGetExpenseById } = require('./routes/expense.controller');
+const { getExpenseById } = require('./models/expense.model');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -50,7 +52,7 @@ app.get('/dashboard', authorization, (req,res) =>{
     res.render('dashboard', {userName});
 });
 
-app.get('/newexpense', authorization, (req,res) =>{
+app.get('/submit-expense', authorization, (req,res) =>{
     const {userId, userName, isAdmin} = req;
     let expense = {
         name: "",
@@ -58,8 +60,18 @@ app.get('/newexpense', authorization, (req,res) =>{
         category: 1,
         is_split: false
     }
-    res.render('expensedetail', {userId, userName, expense});
+    res.render('submit-expense', {userId, userName, expense});
 })
+
+app.get('/share-expense/:id', authorization, async (req,res) =>{
+    const {userId, userName} = req;
+    let expenseId = req.params.id;
+    let response = await getExpenseById(expenseId);
+    let expense = response[0];
+
+    res.render('share-expense',{userId, userName,expense})
+})
+
 
 app.use('/expenses',expenseRouter);
 app.use('/user', userRouter);

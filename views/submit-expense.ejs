@@ -2,30 +2,31 @@
 <div class="container">
     <h1>New Expense</h1>
     <%- include ("./flash-messages"); %>
-    <form action="/expenses/" method="POST">
+    <form method="post" action="/expenses/">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col">
             <div class="p-3 py-5">
                 <div class="row mt-2">
                     <div class="col">
                         <label for="name" class="labels">Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="enter name" value="<%=expense.name%>">
+                        <input type="text" name="name" class="form-control" placeholder="enter name">
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col">
                         <label for="date" class="labels">Date</label>
-                        <input type="datetime" name="date" class="form-control" placeholder="enter date" value="<%=expense.date%>">
+                        <input type="date" name="date" class="form-control" placeholder="enter date">
                     </div>
+                </div>
                 <div class="row mt-2">
                     <div class="col">
                         <label for="category" class="labels">Category</label>
-                        <select class="form-select form-control" name="category" id="category">
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
-                          <option>5</option>
+                        <select class="form-select form-control" name="category_id" id="category">
+                          <option selected>Select Category</option>
+                          <option value="1">casa</option>
+                          <option value="2">entertenimento</option>
+                          <option value="3">impostos</option>
+                          <option value="4">refeições</option>
                         </select>
                     </div>
                 </div>
@@ -34,7 +35,7 @@
                         <label for="amount" class="labels">Total Amount</label>
                         <div class="input-group">
                             <span class="input-group-text">€</span>
-                            <input type="number" name="amount" class="form-control">
+                            <input type="number" name="total_amount" class="form-control" >
                         </div>
                     </div>
                 </div>
@@ -45,17 +46,14 @@
                     </div>
                 </div>
                 <div class="row mt-2">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="is_split" id="is_split" value="<%= expense.is_split %>">
-                        <label class="form-check-label" for="is_split">Split expense?</label>
-                      </div>
+                    <div class="col">
+                        <div class="form-check form-switch">
+                            <label class="form-check-label" for="is_split">Split expense?</label>
+                            <input class="form-check-input" type="checkbox" name="is_split" id="is_split">
+                          </div>
+                    </div>
                 </div>
-            </div>
-            <% if(expense.is_split) {%>
-                <div class="mt-5"><input type="submit" class="btn btn-primary profile-button" value="Next Step"></div>
-                <% }else{ %>
-                <div class="mt-5"><input type="submit" class="btn btn-primary profile-button" value="Save Expense"></div>                   
-                <%} %>
+                <div class="mt-5" id="submitWrapper"><input type="submit" id="submitBtn" class="btn btn-primary profile-button" value="Submit Expense"></div>
             </div>
         </div>
     </div>

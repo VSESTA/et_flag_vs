@@ -41,24 +41,33 @@ async function httpGetExpenseById(req, res, next){
  async function httpAddNewExpense(req, res, next){
     //TO-DO:adicionar validacao do authorization
 
+    const {userId} = req;
+
     let newExpense = {
         name:           req.body.name,
         date:           req.body.date,
         category_id:    req.body.category_id,
         total_amount:   req.body.total_amount,
-        is_split:       req.body.is_split,
-        status_id:      req.body.status_id,
+        is_split:       typeof(req.body.is_split) == "undefined" ? 0 : 1,
+        status_id:      1,
         notes:          req.body.notes,
-        created_by:     req.body.created_by
+        created_by:     userId
     };
     try {
        let newExpenseId = await addNewExpense(newExpense);
-       let newDbExpense = await getExpenseById(newExpenseId.insertId);
 
-        return res.status(201).json({
+       if(newExpense.is_split){
+        res.redirect(`/share-expense/${newExpenseId}`);
+       }else{
+        res.redirect('/dashboard');
+       }
+
+        
+       //Comentado porque vou usar EJS e não a API para React
+       /*return res.status(201).json({
             success: true,
             data: newDbExpense
-        });
+        });*/
     } catch (error) {
         console.log(error);
         return res.status(500).json({
