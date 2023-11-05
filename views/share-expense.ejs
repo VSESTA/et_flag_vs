@@ -1,6 +1,6 @@
 <%- include ("./menu"); %>
 <h1>Share <%=expense.name %> expense of €<%= expense.total_amount %></h1>
-<form method="post" action="/expenses/">
+<form method="post" action="/expenses/<%=expense.id%>/addUser">
     <div class="row">
         <div class="col">
             <div class="p-3 py-5">
@@ -19,7 +19,7 @@
                         <label for="amount" class="labels">Amount</label>
                         <div class="input-group">
                             <span class="input-group-text">€</span>
-                            <input type="number" name="amount" class="form-control" >
+                            <input type="number" name="amount" id="amount" class="form-control" >
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -32,3 +32,49 @@
                             <option value="4">CANCELLED</option>
                           </select>
                     </div>
+                    <div class="mt-5">
+                        <input type="submit" id="addUser" class="btn btn-primary profile-button" value="Add User">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="container">
+    <div class="row my-4">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <%if(typeof(users) != 'undefined'){%>
+                    <tbody>
+                        <% users.forEach(function(user){ %>
+                        <tr>
+                            <td><%=user.user_id %></td>
+                            <td><%=user.name %></td>
+                            <td><%=user.amount %></td>
+                            <td><%=user.status_id %></td>
+                            <td><a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                    <%}else{ %>
+                    <tbody>
+                        <tr>
+                            <p>No added users</p>
+                        </tr>
+                    </tbody>
+                    <%} %>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

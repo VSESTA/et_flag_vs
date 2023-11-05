@@ -1,4 +1,5 @@
 const db = require('../db/db');
+const { getCurrentDate } = require('../utils/dates.utils');
 
 //obtem os detalhes de uma despesa partilhada
 async function getSharedExpenseByExpenseId(id){
@@ -23,3 +24,29 @@ async function getSharedExpensesByUserId(id){
     const [sharedExpense,_] = await db.execute(sql);
     return sharedExpense;
 }
+
+async function addUserToExpense(expense_id, user_id, owner_id, amount, status_id ){
+    let sql = `INSERT INTO expense_user(expense_id, user_id, owner_id, amount, status_id, created_at)
+                VALUES(
+                    '${expense_id}',
+                    '${user_id}',
+                    '${owner_id}',
+                    '${amount}',
+                    '${status_id}',
+                    '${getCurrentDate()}'
+                )`;
+    const [result, ...info] = await db.execute(sql);
+    return result;
+}
+
+async function getExpenseUserById(id){
+    let sql = `SELECT * 
+    FROM expense_user
+    INNER JOIN user ON expense_user.user_id = user.id
+    WHERE expense_user.id = ${id}`;
+    const [sharedExpense,_] = await db.execute(sql);
+    return sharedExpense[0];
+
+}
+
+module.exports={addUserToExpense, getExpenseUserById, getSharedExpenseByExpenseId}
