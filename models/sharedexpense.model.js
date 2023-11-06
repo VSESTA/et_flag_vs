@@ -3,9 +3,10 @@ const { getCurrentDate } = require('../utils/dates.utils');
 
 //obtem os detalhes de uma despesa partilhada
 async function getSharedExpenseByExpenseId(id){
-    let sql = `SELECT * 
+    let sql = `SELECT expense_user.user_id, user.name, expense_user.amount, status.name as status 
                 FROM expense_user
                 INNER JOIN user ON expense_user.user_id = user.id
+                INNER JOIN status ON expense_user.status_id = status.id
                 WHERE expense_user.expense_id = ${id}`;
     const [sharedExpense,_] = await db.execute(sql);
     return sharedExpense;
@@ -48,5 +49,6 @@ async function getExpenseUserById(id){
     return sharedExpense[0];
 
 }
+
 
 module.exports={addUserToExpense, getExpenseUserById, getSharedExpenseByExpenseId}

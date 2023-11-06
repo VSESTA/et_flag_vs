@@ -1,9 +1,28 @@
-const { getUserById, updateUser } = require('../models/user.model');
+const { getUserById, updateUser ,getAllUsers} = require('../models/user.model');
 
 async function getUserProfile(req, res){
     const {userId, userName, isAdmin} = req;
     let user = await getUserById(req.userId);
     res.render('profile', { userName, user});
+}
+
+async function httpGetAllUsers (req, res){
+    const {userId, userName, isAdmin} = req;
+    try {
+        const users = await getAllUsers(false);
+        console.log(users)
+        return users ;      
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "Internal error"
+        })
+    }
+
+
+
+
 }
 
 async function saveUserProfile(req, res){
@@ -42,4 +61,4 @@ async function saveUserProfile(req, res){
 
 }
 
-module.exports={getUserProfile, saveUserProfile}
+module.exports={getUserProfile, saveUserProfile, httpGetAllUsers}

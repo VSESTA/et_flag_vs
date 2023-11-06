@@ -49,7 +49,7 @@ async function httpGetExpenseById(req, res, next){
         category_id:    req.body.category_id,
         total_amount:   req.body.total_amount,
         is_split:       typeof(req.body.is_split) == "undefined" ? 0 : 1,
-        status_id:      1,
+        status_id:      req.body.status_id,
         notes:          req.body.notes,
         created_by:     userId
     };

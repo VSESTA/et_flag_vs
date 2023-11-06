@@ -30,7 +30,7 @@ async function getExpenseById(id){
 }
 
 async function addNewExpense(expense){
-    let sql = `INSERT INTO expense(name, date, category_id, total_amount, is_split, status_id, notes, created_by) VALUES(
+    const sql = `INSERT INTO expense(name, date, category_id, total_amount, is_split, status_id, notes, created_by) VALUES(
     "${expense.name}",
     "${expense.date}",
     ${expense.category_id},
@@ -45,7 +45,7 @@ async function addNewExpense(expense){
 }
 
 async function updateExpense(id, expense){
-    let sql = `UPDATE expense SET 
+    const sql = `UPDATE expense SET 
     name = "${expense.name}",
     date= "${expense.date}",
     category_id = ${expense.category_id},
@@ -62,9 +62,15 @@ async function updateExpense(id, expense){
 }
 
 async function deleteExpense(id){
-    let sql = `DELETE FROM expense WHERE id =${id}`;
-    let [expense,_] = await db.execute(sql);
+    const sql = `DELETE FROM expense WHERE id =${id}`;
+    const [expense,_] = await db.execute(sql);
     return expense;
+}
+
+async function getTotalAmountByExpenseId(id){
+    const sql = `SELECT total_amount FROM expense WHERE id = ${id}`;
+    const [result, ...info] = await db.execute(sql);
+    return result[0].total_amount;
 }
 
 module.exports = {
@@ -72,5 +78,6 @@ module.exports = {
     getExpenseById,
     addNewExpense,
     updateExpense,
-    deleteExpense
+    deleteExpense,
+    getTotalAmountByExpenseId
 };

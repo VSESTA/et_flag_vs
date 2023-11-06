@@ -11,6 +11,9 @@ const authRouter = require('./routes/auth.router');
 const { getCurrentDate } = require('./utils/dates.utils');
 const { getExpenseById } = require('./models/expense.model');
 const { getSharedExpenseByExpenseId } = require('./models/sharedexpense.model');
+const { httpGetAllCategories } = require('./routes/category.controller');
+const { httpGetAllStatuses } = require('./routes/status.controller');
+const { httpGetAllUsers } = require('./routes/user.controller');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -52,26 +55,37 @@ app.get('/dashboard', authorization, (req,res) =>{
     res.render('dashboard', {userName});
 });
 
-app.get('/submit-expense', authorization, (req,res) =>{
+app.get('/submit-expense', authorization, async (req,res) =>{
     const {userId, userName, isAdmin} = req;
     let expense = {
         name: "",
         date: getCurrentDate(),
-        category: 1,
+        category: "",
         is_split: false
     }
-    res.render('submit-expense', {userId, userName, expense});
+    //categorias
+    let categories = await httpGetAllCategories(req,res);
+
+    //status
+    let statuses = await httpGetAllStatuses(req,res);
+
+    res.render('submit-expense', {userId, userName, expense, categories, statuses});
 })
 
 app.get('/share-expense/:id', authorization, async (req,res) =>{
     const {userId, userName} = req;
-    let expenseId = req.params.id;
-    let response = await getExpenseById(expenseId);
+    const expenseId = req.params.id;
+    const response = await getExpenseById(expenseId);
     let expense = response[0];
 
-    let users = await getSharedExpenseByExpenseId(expenseId);
+    //combo box users
+    const comboUsers = await httpGetAllUsers(req,res);
+    //status
+    const statuses = await httpGetAllStatuses(req,res);
 
-    res.render('share-expense',{userId, userName,expense, users})
+    const users = await getSharedExpenseByExpenseId(expenseId);
+
+    res.render('share-expense',{userId, userName,expense, users, statuses, comboUsers})
 })
 
 

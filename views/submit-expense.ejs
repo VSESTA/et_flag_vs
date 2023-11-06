@@ -22,11 +22,12 @@
                     <div class="col">
                         <label for="category" class="labels">Category</label>
                         <select class="form-select form-control" name="category_id" id="category">
-                          <option selected>Select Category</option>
-                          <option value="1">casa</option>
-                          <option value="2">entertenimento</option>
-                          <option value="3">impostos</option>
-                          <option value="4">refeições</option>
+                        <%if(typeof(categories) != 'undefined'){%>
+                          <option value="">Select Category</option>
+                            <% categories.forEach(function(category){ %>
+                          <option value="<%= category.id%>"><%= category.name%></option>
+                          <% }) %>
+                          <%}%>
                         </select>
                     </div>
                 </div>
@@ -43,6 +44,19 @@
                     <div class="col">
                         <label for="notes" class="labels">Notes</label>
                         <textarea class="form-control" name="notes" id="notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="status_id" class="labels">Status</label>
+                        <select class="form-select form-control" name="status_id" id="status_id">
+                        <%if(typeof(statuses) != 'undefined'){%>
+                          <option value="">Select Status</option>
+                            <% statuses.forEach(function(status){ %>
+                          <option value="<%= status.id%>"><%= status.name%></option>
+                          <% }) %>
+                          <%}%>
+                        </select>
                     </div>
                 </div>
                 <div class="row mt-2">

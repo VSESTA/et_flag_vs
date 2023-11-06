@@ -1,5 +1,16 @@
 const db = require('../db/db');
-const {getCurrentDate} = require('../utils/dates.utils')
+const {getCurrentDate} = require('../utils/dates.utils');
+
+async function getAllUsers(showInactive){
+    let sql;
+    if(showInactive){
+         sql=`SELECT id, name, is_active FROM user`;
+    }else{
+         sql=`SELECT id, name, is_active FROM user WHERE is_active = 1`;
+    }
+    const [result, ...info] = await db.execute(sql);
+    return result;
+}
 
 async function getUserById(id){
     const sql=`SELECT * FROM user WHERE id = ${id}`;
@@ -50,6 +61,7 @@ async function updateUserStatus(id, user){};
 module.exports = {
     createUser, 
     checkExistingUserByEmail,
+    getAllUsers,
     getUserById,
     getUserByEmail,
     updateUser
