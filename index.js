@@ -8,12 +8,6 @@ const authorization = require('./middleware/authorization');
 const expenseRouter = require('./routes/expense.router');
 const userRouter = require('./routes/user.router');
 const authRouter = require('./routes/auth.router');
-const { getCurrentDate } = require('./utils/dates.utils');
-const { getExpenseById } = require('./models/expense.model');
-const { getSharedExpenseByExpenseId } = require('./models/sharedexpense.model');
-const { httpGetAllCategories } = require('./routes/category.controller');
-const { httpGetAllStatuses } = require('./routes/status.controller');
-const { httpGetAllUsers } = require('./routes/user.controller');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -54,40 +48,6 @@ app.get('/dashboard', authorization, (req,res) =>{
     const {userId, userName, isAdmin} = req;
     res.render('dashboard', {userName});
 });
-
-app.get('/submit-expense', authorization, async (req,res) =>{
-    const {userId, userName, isAdmin} = req;
-    let expense = {
-        name: "",
-        date: getCurrentDate(),
-        category: "",
-        is_split: false
-    }
-    //categorias
-    let categories = await httpGetAllCategories(req,res);
-
-    //status
-    let statuses = await httpGetAllStatuses(req,res);
-
-    res.render('submit-expense', {userId, userName, expense, categories, statuses});
-})
-
-app.get('/share-expense/:id', authorization, async (req,res) =>{
-    const {userId, userName} = req;
-    const expenseId = req.params.id;
-    const response = await getExpenseById(expenseId);
-    let expense = response[0];
-
-    //combo box users
-    const comboUsers = await httpGetAllUsers(req,res);
-    //status
-    const statuses = await httpGetAllStatuses(req,res);
-
-    const users = await getSharedExpenseByExpenseId(expenseId);
-
-    res.render('share-expense',{userId, userName,expense, users, statuses, comboUsers})
-})
-
 
 app.use('/expenses',expenseRouter);
 app.use('/user', userRouter);

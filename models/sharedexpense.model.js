@@ -50,5 +50,12 @@ async function getExpenseUserById(id){
 
 }
 
+async function deleteUserByExpenseId(expense_id, user_id){
+    const sql = `DELETE FROM user_expense WHERE expense_id = ${expense_id} AND user_id = ${user_id}`;
+    const [result, ...info] = await db.execute(sql);
+    return result;
 
-module.exports={addUserToExpense, getExpenseUserById, getSharedExpenseByExpenseId}
+}
+
+
+module.exports={addUserToExpense, getExpenseUserById, getSharedExpenseByExpenseId, deleteUserByExpenseId}

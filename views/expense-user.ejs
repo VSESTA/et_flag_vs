@@ -1,5 +1,6 @@
 <%- include ("./menu"); %>
 <h1>Share <%=expense.name %> expense of €<%= expense.total_amount %></h1>
+<%- include ("./flash-messages"); %>
 <form method="post" action="/expenses/<%=expense.id%>/addUser">
     <div class="row">
         <div class="col">
@@ -64,7 +65,7 @@
                             <td><%=user.name %></td>
                             <td><%=user.amount %></td>
                             <td><%=user.status %></td>
-                            <td><a href="" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a></td>
+                            <td><a href="/expenses/<%=expense.id%>/removeUser/<%= user.user_id %>" class="text-danger"><i class="fas fa-trash fa-lg mx-1"></i></a></td>
                         </tr>
                         <% }) %>
                     </tbody>

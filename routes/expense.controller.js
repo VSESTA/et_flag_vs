@@ -1,4 +1,7 @@
 const { getAllExpenses,getExpenseById, addNewExpense, updateExpense, deleteExpense } = require('../models/expense.model');
+const { httpGetAllCategories } = require('./category.controller');
+const { httpGetAllStatuses } = require('./status.controller');
+const { getCurrentDate } = require('../utils/dates.utils');
 
 async function httpGetAllExpenses(req, res, next){
     //TO-DO:adicionar validacao do authorization
@@ -53,11 +56,14 @@ async function httpGetExpenseById(req, res, next){
         notes:          req.body.notes,
         created_by:     userId
     };
+
+    //adicionar validaçao
+
     try {
        let newExpenseId = await addNewExpense(newExpense);
 
        if(newExpense.is_split){
-        res.redirect(`/share-expense/${newExpenseId}`);
+        res.redirect(`/expenses/${newExpenseId}/users`);
        }else{
         res.redirect('/dashboard');
        }
@@ -131,10 +137,28 @@ async function httpDeleteExpense(req,res){
     }
 }
 
+async function httpLoadExpensePage(req, res, next ){
+    const {userId, userName, isAdmin} = req;
+    let expense = {
+        name: "",
+        date: getCurrentDate(),
+        category: "",
+        is_split: false
+    }
+    //categorias
+    let categories = await httpGetAllCategories(req,res);
+
+    //status
+    let statuses = await httpGetAllStatuses(req,res);
+
+    res.render('add-expense', {userId, userName, expense, categories, statuses});
+}
+
 module.exports = {
     httpGetAllExpenses, 
     httpGetExpenseById,
     httpAddNewExpense,
     httpUpdateExpense,
-    httpDeleteExpense
+    httpDeleteExpense,
+    httpLoadExpensePage
 }
