@@ -67,9 +67,10 @@ async function httpDeleteUserByExpenseId(req, res, next){
     
     try {
         const response = await deleteUserByExpenseId(id, user_id);
-        res.redirect(`/expenses/${id}/users`)
+        console.log(response)
+        return res.redirect(`/expenses/${id}/users`)
     } catch (error) {
-        
+        console.log(error)
     }
 }
 

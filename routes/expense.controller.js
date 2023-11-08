@@ -24,13 +24,23 @@ async function httpGetAllExpenses(req, res, next){
 
 async function httpGetExpenseById(req, res, next){
     //TO-DO:adicionar validacao do authorization
-    let id = req.params.id;
+    const {userId, userName} = req;
+    const id = req.params.id;
     try{
         const expense = await getExpenseById(id);
-        return res.status(200).json({
+    //categorias
+    const categories = await httpGetAllCategories(req,res);
+
+    //status
+    const statuses = await httpGetAllStatuses(req,res);
+
+    res.render('add-expense', {userId, userName, expense, categories, statuses});
+
+        //Comentado porque vou usar EJS e não a criar API
+        /*return res.status(200).json({
             success: true,
             data: expense
-        });
+        });*/
 
     }catch(error){
         console.log(error);
@@ -69,7 +79,7 @@ async function httpGetExpenseById(req, res, next){
        }
 
         
-       //Comentado porque vou usar EJS e não a API para React
+       //Comentado porque vou usar EJS e não a criar API
        /*return res.status(201).json({
             success: true,
             data: newDbExpense
@@ -120,7 +130,7 @@ async function httpUpdateExpense(req, res){
 }
 async function httpDeleteExpense(req,res){
     //TO-DO:adicionar validacao do authorization
-    let id = req.params.id;
+    const id = req.params.id;
 
     try {
         expense = await deleteExpense(id);
@@ -146,10 +156,10 @@ async function httpLoadExpensePage(req, res, next ){
         is_split: false
     }
     //categorias
-    let categories = await httpGetAllCategories(req,res);
+    const categories = await httpGetAllCategories(req,res);
 
     //status
-    let statuses = await httpGetAllStatuses(req,res);
+    const statuses = await httpGetAllStatuses(req,res);
 
     res.render('add-expense', {userId, userName, expense, categories, statuses});
 }

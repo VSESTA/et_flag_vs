@@ -25,7 +25,7 @@ async function getAllExpenses(){
 async function getExpenseById(id){
     const sql=`SELECT * FROM EXPENSE WHERE id = ${id}`;
     const [result, ...info] = await db.execute(sql);
-    return result;
+    return result[0];
 
 }
 

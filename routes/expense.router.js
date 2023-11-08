@@ -23,6 +23,7 @@ expenseRouter.get('/:id/users', authorization, httpLoadExpenseUserPage);
 //criar novo user na despesa
 expenseRouter.post('/:id/addUser', authorization, httpAddUserToExpense);
 
+//visualizar detalhe da despesa
 expenseRouter.get('/:id', httpGetExpenseById);
 
 expenseRouter.put('/:id', authorization, httpUpdateExpense);
