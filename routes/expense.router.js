@@ -9,10 +9,10 @@ const {httpAddUserToExpense, httpDeleteUserByExpenseId, httpLoadExpenseUserPage}
 const expenseRouter = express.Router();
 
 //obter todas as despesas por utilizador logado
-expenseRouter.get('/',authorization, httpGetAllExpenses);
+expenseRouter.get('/history',authorization, httpGetAllExpenses);
 
 //obter página para criar despesa
-expenseRouter.get('/add', authorization, httpLoadExpensePage);
+expenseRouter.get('/', authorization, httpLoadExpensePage);
 
 //criar nova despesa
 expenseRouter.post('/', authorization, httpAddNewExpense);
@@ -26,7 +26,7 @@ expenseRouter.post('/:id/addUser', authorization, httpAddUserToExpense);
 //visualizar detalhe da despesa
 expenseRouter.get('/:id', httpGetExpenseById);
 
-expenseRouter.put('/:id', authorization, httpUpdateExpense);
+expenseRouter.post('/:id', authorization, httpUpdateExpense);
 
 expenseRouter.delete('/:id', authorization, httpDeleteExpense);
 

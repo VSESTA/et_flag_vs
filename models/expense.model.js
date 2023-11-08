@@ -1,20 +1,5 @@
 const db = require('../db/db');
 
-const expenses = [
-    {
-        id: 1,
-        name: "Conta da água",
-        amount: 40.06,
-        date: new Date("October 22, 2023")
-    },
-    {
-        id: 2,
-        name: "Conta da luz",
-        amount: 70.45,
-        date: new Date("October 23, 2023")
-    }
-];
-
 async function getAllExpenses(){
     const sql = "SELECT * FROM EXPENSE";
     const [result, ...info] = await db.execute(sql);
@@ -23,7 +8,7 @@ async function getAllExpenses(){
 }
 
 async function getExpenseById(id){
-    const sql=`SELECT * FROM EXPENSE WHERE id = ${id}`;
+    const sql=`SELECT id, name, date, category_id, total_amount, is_split, status_id, notes FROM EXPENSE WHERE id = ${id}`;
     const [result, ...info] = await db.execute(sql);
     return result[0];
 

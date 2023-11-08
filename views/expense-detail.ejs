@@ -1,6 +1,6 @@
 <%- include ("./menu"); %>
 <div class="container">
-    <% if(typeof(expense.id) === 'undefined'){ %>
+    <% if(typeof(id) === 'undefined'){ %>
     <h1>New Expense</h1>
     <%- include ("./flash-messages"); %>
     <form method="post" action="/expenses/">
@@ -68,13 +68,17 @@
                           </div>
                     </div>
                 </div>
-                <div class="mt-5" id="submitWrapper"><input type="submit" id="submitBtn" class="btn btn-primary profile-button" value="Submit Expense"></div>
+                <div class="mt-5" id="submitWrapper">
+                    <input type="submit" id="submitBtn" class="btn btn-primary profile-button me-2" value="Submit Expense">
+                    <a class="btn btn-secondary" href="/dashboard" role="button">Go back</a>
+                </div>
             </div>
         </div>
     </div>
     </form>
     <%}else{ %>
     <h1>Expense: <%=expense.name %></h1> 
+    <%- include ("./flash-messages"); %>
     <form method="post" action="/expenses/<%= expense.id %>">
         <div class="row">
             <div class="col">
@@ -88,7 +92,7 @@
                     <div class="row mt-2">
                         <div class="col">
                             <label for="date" class="labels">Date</label>
-                            <input type="date" name="date" class="form-control" placeholder="enter date" value="<%=expense.date %>">
+                            <input type="date" name="date" class="form-control" placeholder="enter date" value="<%=expense.date.toISOString().split('T')[0] %>">
                         </div>
                     </div>
                     <div class="row mt-2">
@@ -98,7 +102,7 @@
                             <%if(typeof(categories) != 'undefined'){%>
                               <option value="">Select Category</option>
                                 <% categories.forEach(function(category){ %>
-                              <option value="<%= category.id%>"><%= category.name%></option>
+                              <option value="<%= category.id%>" <%if(expense.category_id === category.id){ %>selected <%}%> ><%= category.name%></option>
                               <% }) %>
                               <%}%>
                             </select>
@@ -126,7 +130,7 @@
                             <%if(typeof(statuses) != 'undefined'){%>
                               <option value="">Select Status</option>
                                 <% statuses.forEach(function(status){ %>
-                              <option value="<%= status.id%>"><%= status.name%></option>
+                              <option value="<%= status.id%>" <%if(expense.status_id === status.id){ %>selected <%}%>  ><%= status.name%></option>
                               <% }) %>
                               <%}%>
                             </select>
@@ -136,11 +140,14 @@
                         <div class="col">
                             <div class="form-check form-switch">
                                 <label class="form-check-label" for="is_split">Split expense?</label>
-                                <input class="form-check-input" type="checkbox" name="is_split" id="is_split" value="<%=expense.is_split %>">
+                                <input class="form-check-input" type="checkbox" name="is_split" id="is_split" value="<%=expense.is_split %>" <%if(expense.is_split === 1){ %>checked <%}%>>
                               </div>
                         </div>
                     </div>
-                    <div class="mt-5" id="submitWrapper"><input type="submit" id="submitBtn" class="btn btn-primary profile-button" value="Submit Expense"></div>
+                    <div class="mt-5" id="submitWrapper">
+                        <input type="submit" id="submitBtn" class="btn btn-primary profile-button me-2" value="Submit Expense">
+                        <a class="btn btn-secondary" href="/dashboard" role="button">Go back</a>
+                    </div>
                 </div>
             </div>
         </div>

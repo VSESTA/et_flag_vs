@@ -10,7 +10,6 @@ async function httpGetAllUsers (req, res){
     const {userId, userName, isAdmin} = req;
     try {
         const users = await getAllUsers(false);
-        console.log(users)
         return users ;      
     } catch (error) {
         console.log(error);
@@ -19,10 +18,6 @@ async function httpGetAllUsers (req, res){
             error: "Internal error"
         })
     }
-
-
-
-
 }
 
 async function saveUserProfile(req, res){
@@ -54,7 +49,7 @@ async function saveUserProfile(req, res){
     }
 
     //fazer o update
-    let id = await updateUser(userId,updateUser );
+    const id = await updateUser(userId,updateUser );
 
     res.render('profile', {userName,
         updateUser} )

@@ -43,8 +43,7 @@ async function httpAddUserToExpense(req, res, next){
         }
     });
 
-    const response = await getExpenseById(expense_id);
-    let expense = response[0];
+    const expense = await getExpenseById(expense_id);
 
     //combo box users
     const comboUsers = await httpGetAllUsers(req,res);
@@ -67,7 +66,6 @@ async function httpDeleteUserByExpenseId(req, res, next){
     
     try {
         const response = await deleteUserByExpenseId(id, user_id);
-        console.log(response)
         return res.redirect(`/expenses/${id}/users`)
     } catch (error) {
         console.log(error)
@@ -80,8 +78,7 @@ async function httpLoadExpenseUserPage(req,res){
     const {userId, userName} = req;
     const expenseId = req.params.id;
     
-    const response = await getExpenseById(expenseId);
-    let expense = response[0];
+    const expense = await getExpenseById(expenseId);
 
     //combo box users
     const comboUsers = await httpGetAllUsers(req,res);

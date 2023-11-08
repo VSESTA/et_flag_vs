@@ -34,7 +34,7 @@ async function httpGetExpenseById(req, res, next){
     //status
     const statuses = await httpGetAllStatuses(req,res);
 
-    res.render('add-expense', {userId, userName, expense, categories, statuses});
+    res.render('expense-detail', {id, userId, userName, expense, categories, statuses});
 
         //Comentado porque vou usar EJS e não a criar API
         /*return res.status(200).json({
@@ -54,9 +54,8 @@ async function httpGetExpenseById(req, res, next){
  async function httpAddNewExpense(req, res, next){
     //TO-DO:adicionar validacao do authorization
 
-    const {userId} = req;
-
-    let newExpense = {
+    const {userId, userName} = req;
+    let expense = {
         name:           req.body.name,
         date:           req.body.date,
         category_id:    req.body.category_id,
@@ -68,35 +67,46 @@ async function httpGetExpenseById(req, res, next){
     };
 
     //adicionar validaçao
+    const errors = validateExpenseInputs(expense);
 
-    try {
-       let newExpenseId = await addNewExpense(newExpense);
 
-       if(newExpense.is_split){
-        res.redirect(`/expenses/${newExpenseId}/users`);
-       }else{
-        res.redirect('/dashboard');
-       }
-
-        
-       //Comentado porque vou usar EJS e não a criar API
-       /*return res.status(201).json({
-            success: true,
-            data: newDbExpense
-        });*/
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            success: false,
-            error: "Internal error"
-        })
-        
+    if(errors.length >0){
+        //categorias
+        const categories = await httpGetAllCategories(req,res);
+        //status
+        const statuses = await httpGetAllStatuses(req,res);
+        res.render('expense-detail', {userId, userName,expense, errors, statuses, categories});
+    }else{
+        try {
+            let newExpenseId = await addNewExpense(expense);
+     
+            if(expense.is_split){
+             res.redirect(`/expenses/${newExpenseId}/users`);
+            }else{
+             res.redirect('/dashboard');
+            }  
+            //Comentado porque vou usar EJS e não a criar API
+            /*return res.status(201).json({
+                 success: true,
+                 data: newDbExpense
+             });*/
+         } catch (error) {
+             console.log(error);
+             return res.status(500).json({
+                 success: false,
+                 error: "Internal error"
+             })
+             
+         }
     }
+
+    
 }
 
 async function httpUpdateExpense(req, res){
     //TO-DO:adicionar validacao do authorization
     let id = req.params.id;
+    const {userId} = req;
     let expense = {
         name:           req.body.name,
         date:           req.body.date,
@@ -105,7 +115,7 @@ async function httpUpdateExpense(req, res){
         is_split:       req.body.is_split,
         status_id:      req.body.status_id,
         notes:          req.body.notes,
-        updated_by:     req.body.updated_by
+        updated_by:     userId
     }
 
     try {
@@ -117,9 +127,14 @@ async function httpUpdateExpense(req, res){
             });
         }
 
-        expense = await updateExpense(id, expense);
+        await updateExpense(id, expense);
 
-        return res.status(202).json(expense);
+        if(expense.is_split){
+            res.redirect(`/expenses/${id}/users`);
+           }else{
+            res.redirect('/dashboard');
+           }
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -149,6 +164,7 @@ async function httpDeleteExpense(req,res){
 
 async function httpLoadExpensePage(req, res, next ){
     const {userId, userName, isAdmin} = req;
+    const id = req.params.id;
     let expense = {
         name: "",
         date: getCurrentDate(),
@@ -161,7 +177,15 @@ async function httpLoadExpensePage(req, res, next ){
     //status
     const statuses = await httpGetAllStatuses(req,res);
 
-    res.render('add-expense', {userId, userName, expense, categories, statuses});
+    res.render('expense-detail', {userId, userName, expense, categories, statuses});
+}
+
+function validateExpenseInputs(expense){
+    let errors = [];
+    if(!expense.name || !expense.date || !expense.category_id || !expense.total_amount || !expense.status_id || !expense.is_split){
+        errors.push({ message: 'Missing fields required'})
+    }
+    return errors;
 }
 
 module.exports = {
