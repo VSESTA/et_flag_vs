@@ -1,7 +1,7 @@
 const db = require('../db/db');
 
 async function getAllExpenses(){
-    const sql = "SELECT * FROM EXPENSE";
+    const sql = "SELECT * FROM expense";
     const [result, ...info] = await db.execute(sql);
     return result;
 

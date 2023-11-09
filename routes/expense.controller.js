@@ -1,16 +1,16 @@
 const { getAllExpenses,getExpenseById, addNewExpense, updateExpense, deleteExpense } = require('../models/expense.model');
+const {getSharedExpensesByUserId} = require('../models/sharedexpense.model');
 const { httpGetAllCategories } = require('./category.controller');
 const { httpGetAllStatuses } = require('./status.controller');
 const { getCurrentDate } = require('../utils/dates.utils');
 
 async function httpGetAllExpenses(req, res, next){
     //TO-DO:adicionar validacao do authorization
+    const {userId, userName} = req;
     try{
-        const expenses = await getAllExpenses();
-        return res.status(200).json({
-            success: true,
-            data: expenses
-        });
+        const expenses = await getSharedExpensesByUserId(userId);
+
+        res.render('expense-list',{userId, userName, expenses})
 
     }catch(error){
         console.log(error);
@@ -112,7 +112,7 @@ async function httpUpdateExpense(req, res){
         date:           req.body.date,
         category_id:    req.body.category_id,
         total_amount:   req.body.total_amount,
-        is_split:       req.body.is_split,
+        is_split:       typeof(req.body.is_split) == "undefined" ? 0 : 1,
         status_id:      req.body.status_id,
         notes:          req.body.notes,
         updated_by:     userId

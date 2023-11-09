@@ -1,15 +1,12 @@
 const express = require('express');
 const authorization = require('../middleware/authorization');
 
-const {httpGetAllExpenses, httpGetExpenseById, httpAddNewExpense,httpUpdateExpense, httpDeleteExpense, httpLoadExpensePage} = require('./expense.controller');
+const { httpGetExpenseById, httpAddNewExpense,httpUpdateExpense, httpDeleteExpense, httpLoadExpensePage} = require('./expense.controller');
 const {httpAddUserToExpense, httpDeleteUserByExpenseId, httpLoadExpenseUserPage} = require('./expense-user.controller');
 
 
 //criar um objecto para as rotas
 const expenseRouter = express.Router();
-
-//obter todas as despesas por utilizador logado
-expenseRouter.get('/history',authorization, httpGetAllExpenses);
 
 //obter página para criar despesa
 expenseRouter.get('/', authorization, httpLoadExpensePage);

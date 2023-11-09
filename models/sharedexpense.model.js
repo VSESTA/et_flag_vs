@@ -14,13 +14,44 @@ async function getSharedExpenseByExpenseId(id){
 
 //obtem todas as despesas a decorrer que um utilizador tem
 async function getSharedExpensesByUserId(id){
-    let sql = `SELECT * 
-                FROM expense
-                INNER JOIN status on expense.status_id = status.id AND status.name in ("ACTIVE","ON-HOLD")
-                LEFT JOIN expense_user ON expense.id = expense_user.expense_id
+    let sql = `SELECT
+                    expense.id,
+                    expense.name,
+                    (SELECT expense.total_amount - COALESCE(SUM(aux.amount),0)
+                        FROM expense_user aux
+                        WHERE aux.expense_id = expense.id AND aux.user_id <> expense.created_by) AS due_amount,
+                    expense.total_amount AS total_amount,
+                    'me' AS user,
+                    expense.date,
+                    category.name AS category,
+                    status.name AS status,
+                    expense.is_split
+                FROM
+                    expense
+                INNER JOIN status ON expense.status_id = status.id
+                INNER JOIN category ON expense.category_id = category.id
                 WHERE
-                (expense.created_by = ${id} OR (expense_user.user_id = ${id} AND expense_user.owner_id<>expense.user_id))
-                AND expense_user.status_id not in (SELECT id FROM status WHERE status.name = "PAID")
+                    expense.created_by = ${id}
+                UNION ALL
+                SELECT
+                    expense.id,
+                    expense.name,
+                    expense_user.amount AS due_amount,
+                    expense.total_amount AS total_amount,
+                    user.name AS user,
+                    expense.date,
+                    category.name AS category,
+                    status.name AS status,
+                    expense.is_split
+                FROM
+                    expense
+                INNER JOIN STATUS ON expense.status_id =status.id 
+                INNER JOIN category ON expense.category_id = category.id
+                INNER JOIN expense_user ON expense.id = expense_user.expense_id
+                INNER JOIN USER ON expense_user.owner_id = user.id
+                WHERE
+                    expense_user.user_id = ${id} AND expense_user.owner_id <> expense_user.user_id
+                ORDER BY date DESC
                 `;
     const [sharedExpense,_] = await db.execute(sql);
     return sharedExpense;
@@ -58,4 +89,8 @@ async function deleteUserByExpenseId(expense_id, user_id){
 }
 
 
-module.exports={addUserToExpense, getExpenseUserById, getSharedExpenseByExpenseId, deleteUserByExpenseId}
+module.exports={addUserToExpense, 
+                getExpenseUserById, 
+                getSharedExpenseByExpenseId, 
+                getSharedExpensesByUserId,
+                deleteUserByExpenseId}

@@ -8,6 +8,7 @@ const authorization = require('./middleware/authorization');
 const expenseRouter = require('./routes/expense.router');
 const userRouter = require('./routes/user.router');
 const authRouter = require('./routes/auth.router');
+const historyRouter = require('./routes/history.router');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -52,5 +53,6 @@ app.get('/dashboard', authorization, (req,res) =>{
 app.use('/expenses',expenseRouter);
 app.use('/user', userRouter);
 app.use('/auth',authRouter);
+app.use('/history', historyRouter);
 
 app.listen(process.env.PORT);

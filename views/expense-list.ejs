@@ -1,0 +1,56 @@
+<%- include ("./menu"); %>
+<div class="container">
+    <h1>History</h1>
+    <div class="row my-4">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-striped text-center">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Due Amount</th>
+                            <th>Expense Owner</th>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <%if(typeof(expenses) != 'undefined'){%>
+                    <tbody>
+                        <% expenses.forEach(function(expense){ %>
+                            <tr>
+                                <td><%=expense.id%></td>
+                                <td><%=expense.name%></td>
+                                <td><span class="text-danger">€<%=expense.due_amount%></span> of €<%=expense.total_amount%></td>
+                                <td><%=expense.user%></td>
+                                <td><%=expense.date.toISOString().split('T')[0]%></td>
+                                <td><%=expense.category%></td>
+                                <td><%=expense.status%></td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                    <%}else{ %>
+                    <tbody>
+                        <tr>
+                            No expenses
+                        </tr>
+                    </tbody>
+                    <%} %>
+                </table>
+            </div>
+            <%if(typeof(expenses) != 'undefined'){%>
+            <div>
+                <ul class="pagination">
+                    <li class="page-item">
+                    <a class="page-link" href="#">&laquo;</a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" href="#">&raquo;</a>
+                    </li>
+                </ul>
+            </div>
+            <%}%>
+        </div>
+    </div>
+</div>
