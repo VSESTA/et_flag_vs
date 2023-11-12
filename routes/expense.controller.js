@@ -1,4 +1,4 @@
-const { getAllExpenses,getExpenseById, addNewExpense, updateExpense, deleteExpense } = require('../models/expense.model');
+const { getExpenseById, addNewExpense, updateExpense, deleteExpense } = require('../models/expense.model');
 const {getSharedExpensesByUserId} = require('../models/sharedexpense.model');
 const { httpGetAllCategories } = require('./category.controller');
 const { httpGetAllStatuses } = require('./status.controller');

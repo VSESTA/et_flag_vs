@@ -1,8 +1,160 @@
 <%- include ("./menu"); %>
 <div class="container">
     <h1>Dashboard</h1>
-    <p class="lead mb-3">Total Expenses: </p>
-    <p class="lead mb-3">Due Amount: </p>
-    <p class="lead mb-3">Cash in: </p>
-    
+    <div class="d-flex justify-content-end">
+        <div class="form-floating mx-2">
+            <input type="date" class="form-control" id="floatingDateFrom" value="<%=from.toISOString().split('T')[0]%>">
+            <label for="floatingDateFrom">From</label>
+        </div>
+        <div class="form-floating mx-2">
+            <input type="date" class="form-control" id="floatingDateTo" value="<%=to.toISOString().split('T')[0]%>">
+            <label for="floatingDateTo">To</label>
+        </div>
+        <button type="button" class="btn btn-dark">Choose Dates</button>
+
+    </div>
+    <h5 class="mb-3">Overview</h5>
+    <div class="row d-flex justify-content-around mb-3">
+        <div class="card border-primary mb-3" style="max-width: 20rem;">
+            <div class="card-header">Total:</div>
+            <div class="card-body">
+              <h4 class="card-title">1000€</h4>
+            </div>
+        </div>
+        <div class="card border-danger mb-3" style="max-width: 20rem;">
+            <div class="card-header">Due Amount:</div>
+            <div class="card-body">
+              <h4 class="card-title">1000€</h4>
+            </div>
+        </div>
+        <div class="card border-success mb-3" style="max-width: 20rem;">
+            <div class="card-header">Cash in:</div>
+            <div class="card-body">
+              <h4 class="card-title">1000€</h4>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <h5 class="mb-3">Expense by Category</h5>
+        <div id="myCarousel" class="carousel slide container" data-bs-ride="carousel">
+            <div class="carousel-inner w-100">
+                <div class="carousel-item active">
+                <div class="col-md-3">
+                    <div class="card border-warning m-3" style="max-width: 50rem;">
+                        <div class="card-header">Cash in:</div>
+                        <div class="card-body">
+                          <h4 class="card-title">1000€</h4>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                    <div class="card border-warning m-3" style="max-width: 50rem;">
+                        <div class="card-header">Cash in:</div>
+                        <div class="card-body">
+                          <h4 class="card-title">1000€</h4>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                    <div class="card border-warning m-3" style="max-width: 50rem;">
+                        <div class="card-header">Cash in:</div>
+                        <div class="card-body">
+                          <h4 class="card-title">1000€</h4>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                    <div class="card border-warning m-3" style="max-width: 50rem;">
+                        <div class="card-header">Cash in:</div>
+                        <div class="card-body">
+                          <h4 class="card-title">1000€</h4>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                    <div class="card border-warning m-3" style="max-width: 50rem;">
+                        <div class="card-header">Cash in:</div>
+                        <div class="card-body">
+                          <h4 class="card-title">1000€</h4>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="col-md-3">
+                    <div class="card border-warning m-3" style="max-width: 50rem;">
+                        <div class="card-header">Cash in:</div>
+                        <div class="card-body">
+                          <h4 class="card-title">1000€</h4>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6 my-3">
+            <h5>Due Payments</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Expense</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-active">
+                        <th>Sara</th>
+                        <td>Jantar</td>
+                        <td>5€</td>
+                        <td><button type="button" class="btn btn-dark">Pay</button></td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 my-3">
+            <h5>Debtors</h5>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Expense</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-active">
+                        <th>Sara</th>
+                        <td>Jantar</td>
+                        <td>5€</td>
+                        <td>ON HOLD</td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>    
 </div>
+
+<script src="/js/dash.js"></script>

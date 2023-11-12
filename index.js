@@ -9,6 +9,7 @@ const expenseRouter = require('./routes/expense.router');
 const userRouter = require('./routes/user.router');
 const authRouter = require('./routes/auth.router');
 const historyRouter = require('./routes/history.router');
+const dashboardRouter = require('./routes/dashboard.router');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -45,14 +46,11 @@ app.get('/', (req,res) =>{
     }
 
 });
-app.get('/dashboard', authorization, (req,res) =>{
-    const {userId, userName, isAdmin} = req;
-    res.render('dashboard', {userName});
-});
 
 app.use('/expenses',expenseRouter);
 app.use('/user', userRouter);
 app.use('/auth',authRouter);
 app.use('/history', historyRouter);
+app.use('/dashboard', dashboardRouter);
 
 app.listen(process.env.PORT);
