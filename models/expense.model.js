@@ -58,11 +58,37 @@ async function getTotalAmountByExpenseId(id){
     return result[0].total_amount;
 }
 
+async function getTotalAmountByTimeInterval(from, to, userId){
+    const  sql = `SELECT SUM(total_amount) as total
+                 FROM expense
+                 INNER JOIN status ON expense.status_id = status.id 
+                 WHERE created_by = ${userId} 
+                 AND date BETWEEN '${from}' AND '${to}'
+                 AND status.name<>'CANCELLED'`;
+    const [result, ...info] = await db.execute(sql);
+    return result[0].total;
+}
+
+async function getTotalAmountByCategoryAndTimeInterval(from, to, userId){
+    const sql = `SELECT SUM(total_amount) as total_cat, category.id, category.name
+                FROM category
+                LEFT JOIN expense ON expense.category_id = category.id
+                LEFT JOIN status ON expense.status_id = status.id
+                WHERE status.name <>'CANCELLED'
+                AND expense.created_by = ${userId}
+                AND date BETWEEN '${from}' AND '${to}'
+                GROUP BY category.id`;
+    const [result, ...info] = await db.execute(sql);
+    return result;
+}
+
 module.exports = {
     getAllExpenses,
     getExpenseById,
     addNewExpense,
     updateExpense,
     deleteExpense,
-    getTotalAmountByExpenseId
+    getTotalAmountByExpenseId,
+    getTotalAmountByTimeInterval,
+    getTotalAmountByCategoryAndTimeInterval
 };
