@@ -14,6 +14,7 @@
                             <th>Date</th>
                             <th>Category</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <%if(typeof(expenses) != 'undefined'){%>
@@ -27,6 +28,12 @@
                                 <td><%=expense.date.toISOString().split('T')[0]%></td>
                                 <td><%=expense.category%></td>
                                 <td><%=expense.status%></td>
+                                <td><%if(expense.user=='me'){%>
+                                        <a href="/expenses/<%= expense.id %>"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <%}else{%>
+                                        <a href="/expenses/<%= expense.id %>/pay"><i class="fa-solid fa-coins"></i></a>
+                                    <%}%>
+                                </td>
                             </tr>
                             <% }) %>
                     </tbody>

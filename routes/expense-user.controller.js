@@ -1,5 +1,5 @@
 const { getTotalAmountByExpenseId, getExpenseById } = require('../models/expense.model');
-const {addUserToExpense, getSharedExpenseByExpenseId, deleteUserByExpenseId} = require('../models/sharedexpense.model');
+const {addUserToExpense, getSharedExpenseByExpenseId, deleteUserByExpenseId, getExpenseWithDetailsById,updatePaymentStatusByUserIdAndExpenseId} = require('../models/sharedexpense.model');
 const { httpGetAllStatuses } = require('./status.controller');
 const { httpGetAllUsers } = require('./user.controller');
 
@@ -90,4 +90,41 @@ async function httpLoadExpenseUserPage(req,res){
     res.render('expense-user',{userId, userName,expense, users, statuses, comboUsers})
 }
 
-module.exports = {httpAddUserToExpense, httpDeleteUserByExpenseId, httpGetAllUsersByExpenseId, httpLoadExpenseUserPage};
+async function httpGetPaymentByExpenseId(req, res, next){
+    const {userId, userName} = req;
+    const expenseId = req.params.id;
+
+    try {
+        const expense = await getExpenseWithDetailsById(expenseId, userId);
+
+        if(userId === expense.user_id){
+            return res.render('pay', {expense, userId, userName})
+        }else{
+            return res.redirect('/dashboard');
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+
+async function httpPayExpense(req, res, next){
+    const {userId, userName} = req;
+    const id = req.params.id;
+    console.log(id)
+    try {
+        const info = await updatePaymentStatusByUserIdAndExpenseId(id, userId)
+        res.redirect('/history')
+    } catch (error) {
+        console.log(error)
+        
+    }
+}
+
+module.exports = {
+    httpAddUserToExpense, 
+    httpDeleteUserByExpenseId, 
+    httpGetAllUsersByExpenseId, 
+    httpLoadExpenseUserPage, 
+    httpGetPaymentByExpenseId,httpPayExpense};

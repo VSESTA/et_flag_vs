@@ -2,8 +2,8 @@ const { getUserById, updateUser ,getAllUsers} = require('../models/user.model');
 
 async function getUserProfile(req, res){
     const {userId, userName, isAdmin} = req;
-    let user = await getUserById(req.userId);
-    res.render('profile', { userName, user});
+    let {password, ...userWithoutPassword} = await getUserById(req.userId);
+    res.render('profile', { userName, userWithoutPassword});
 }
 
 async function httpGetAllUsers (req, res){
@@ -22,7 +22,7 @@ async function httpGetAllUsers (req, res){
 
 async function saveUserProfile(req, res){
     let {userName, userId} = req;
-    const {name, email, password} = req.body;
+    const {name, email} = req.body;
     let errors =[];
 
     let user = await getUserById(userId);
@@ -31,7 +31,7 @@ async function saveUserProfile(req, res){
         errors.push('User was not found');
     }
 
-    if(!password || !name || !email){
+    if(!name || !email){
         errors.push('Missing required fields');
     }
 
@@ -41,18 +41,17 @@ async function saveUserProfile(req, res){
         errors})
     }
 
-    let updateUser = {
+    let userWithoutPassword = {
         name: name,
         email: email,
-        password: password,
         is_active: true
     }
 
     //fazer o update
-    const id = await updateUser(userId,updateUser );
+    const id = await updateUser(userId,userWithoutPassword );
 
     res.render('profile', {userName,
-        updateUser} )
+        userWithoutPassword} )
 
 }
 

@@ -2,7 +2,7 @@ const express = require('express');
 const authorization = require('../middleware/authorization');
 
 const { httpGetExpenseById, httpAddNewExpense,httpUpdateExpense, httpDeleteExpense, httpLoadExpensePage} = require('./expense.controller');
-const {httpAddUserToExpense, httpDeleteUserByExpenseId, httpLoadExpenseUserPage} = require('./expense-user.controller');
+const {httpAddUserToExpense, httpDeleteUserByExpenseId, httpLoadExpenseUserPage, httpGetPaymentByExpenseId, httpPayExpense} = require('./expense-user.controller');
 
 
 //criar um objecto para as rotas
@@ -24,6 +24,11 @@ expenseRouter.post('/:id/addUser', authorization, httpAddUserToExpense);
 expenseRouter.get('/:id', httpGetExpenseById);
 
 expenseRouter.post('/:id', authorization, httpUpdateExpense);
+
+//visualizar pagamento a realizar
+expenseRouter.get('/:id/pay', authorization, httpGetPaymentByExpenseId);
+
+expenseRouter.post('/:id/pay', authorization, httpPayExpense);
 
 expenseRouter.delete('/:id', authorization, httpDeleteExpense);
 

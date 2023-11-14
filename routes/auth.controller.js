@@ -1,7 +1,7 @@
 const bcrypt=require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const {createUser, checkExistingUserByEmail, getUserByEmail} = require('../models/user.model');
+const {createUser, checkExistingUserByEmail, getUserByEmail, getUserById, updateUserPassword} = require('../models/user.model');
 const { response } = require('express');
 
 async function login(req, res){
@@ -158,9 +158,73 @@ async function register(req, res){
 
 }
 
+async function httpUpdateUserPassword(req, res){
+    const errors =[];
+    let {curr_password, new_password, confirm_password} = req.body;
+    const {userId, userName} = req;
+    const {password, ...userWithoutPassword} = await getUserById(userId);
+
+    //validar campos obrigatórios
+    if(!curr_password || !new_password || !confirm_password){
+        errors.push({message: "Required fields missing"});
+    }
+    //password não pode ser igual à antiga
+    if(new_password == curr_password){
+        errors.push({message: "Password cannot be the same as current password"});
+    }
+
+    if(new_password.length <3 || confirm_password.length<3){
+        errors.push({message: "Password requires a minimum of 3 characters"});
+    }
+    //comparar se new_password e confirm_password são iguais
+    if(new_password != confirm_password){
+        errors.push({message: "Passwords do not match"});
+    }
+
+    //comparar se a curr_password corresponde à password existente na bd
+    const isValid = await bcrypt.compare(curr_password, password);
+    if(!isValid){
+        errors.push({message: "Incorrect current password"})
+    }
+
+    if(errors.length>0){
+        res.render('profile',{userName,
+            userWithoutPassword, 
+            errors})
+    }else{
+        //hash password
+        bcrypt.genSalt(10,(error, salt) =>{
+            bcrypt.hash(new_password, salt, async (err, hash) =>{
+                if(err){
+                    throw err;
+                }
+                new_password = hash;
+                try {
+                    let updatedInfo = await updateUserPassword(userId, new_password);
+                    res.redirect('/user/profile')
+
+                    //caso decida via react
+                    /*return res.status(201).json({
+                        success: true,
+                        data: newUserDB
+                    })*/
+                } catch (error) {
+                    console.log(error)
+                    return res.status(500).json({
+                        success: false,
+                        error: "Internal error"
+                    })
+                }
+            })
+
+        })
+
+    }
+}
 
 module.exports = {
     login,
     logout,
-    register
+    register,
+    httpUpdateUserPassword
 }

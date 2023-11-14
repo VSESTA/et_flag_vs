@@ -1,0 +1,51 @@
+<%- include ("./menu"); %>
+<h1>Pay expense: <%=expense.name %> to <%=expense.owner %></h1> 
+<%- include ("./flash-messages"); %>
+<form method="post" action="/expenses/<%= expense.id %>/pay">
+    <div class="row">
+        <div class="col">
+            <div class="p-3 py-5">
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="name" class="labels">Name</label>
+                        <input type="text" name="name" class="form-control" value="<%=expense.name %>" readonly disabled>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="date" class="labels">Date</label>
+                        <input type="date" name="date" class="form-control" value="<%=expense.date.toISOString().split('T')[0] %>" readonly disabled>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="category" class="labels">Category</label>
+                        <input type="text" name="category" class="form-control" placeholder="enter name" value="<%=expense.category%>" readonly disabled>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="amount" class="labels">Total Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input type="number" name="total_amount" class="form-control" value="<%=expense.total_amount %>" readonly disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="due_amount" class="labels">Due Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input type="number" name="due_amount" class="form-control" value="<%=expense.due_amount %>" readonly disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <input type="submit" class="btn btn-primary profile-button me-2" value="Pay">
+                    <a class="btn btn-secondary" href="/history" role="button">Go back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

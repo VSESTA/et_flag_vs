@@ -47,16 +47,23 @@ async function updateUser(id, user){
     let sql = `UPDATE user 
                 SET name = "${user.name}",
                 email = "${user.email}", 
-                password = "${user.password}", 
                 is_active = "1", 
-                updated_at = ${getCurrentDate()}
+                updated_at = "${getCurrentDate()}"
                 WHERE id = ${id}`;
 
-    const [result, ...info] = db.execute(sql); 
+    const result = db.execute(sql); 
     return result;
 };
 
-async function updateUserStatus(id, user){};
+async function updateUserPassword(id, password){
+    let sql = `UPDATE user 
+    SET password = "${password}",
+    updated_at = "${getCurrentDate()}"
+    WHERE id = ${id}`;
+
+const result = db.execute(sql); 
+return result;
+};
 
 module.exports = {
     createUser, 
@@ -64,5 +71,6 @@ module.exports = {
     getAllUsers,
     getUserById,
     getUserByEmail,
-    updateUser
+    updateUser,
+    updateUserPassword
 }

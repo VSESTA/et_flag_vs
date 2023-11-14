@@ -74,11 +74,11 @@ async function getSharedExpensesByUserId(id){
                     status.name AS status,
                     expense.is_split
                 FROM
-                    expense
-                INNER JOIN STATUS ON expense.status_id =status.id 
+                    expense 
                 INNER JOIN category ON expense.category_id = category.id
                 INNER JOIN expense_user ON expense.id = expense_user.expense_id
                 INNER JOIN USER ON expense_user.owner_id = user.id
+                INNER JOIN STATUS ON expense_user.status_id =status.id
                 WHERE
                     expense_user.user_id = ${id} AND expense_user.owner_id <> expense_user.user_id
                 ORDER BY date DESC
@@ -149,6 +149,37 @@ async function deleteUserByExpenseId(expense_id, user_id){
 
 }
 
+async function getExpenseWithDetailsById(expense_id, user_id){
+    const sql = `SELECT expense.id,
+                        expense.name, 
+                        owner.name as owner,
+                        expense.date,
+                        expense.total_amount,
+                        category.name as category,
+                        expense_user.amount as due_amount,
+                        expense_user.user_id
+                FROM expense
+                INNER JOIN user owner ON expense.created_by = owner.id
+                INNER JOIN expense_user ON expense.id = expense_user.expense_id
+                INNER JOIN category ON expense.category_id = category.id
+                WHERE expense.id = ${expense_id}
+                AND expense_user.user_id = ${user_id}
+    `;
+    const [result, ...info] = await db.execute(sql);
+    return result[0];
+
+}
+
+async function updatePaymentStatusByUserIdAndExpenseId(expense_id, user_id){
+    const sql = `UPDATE expense_user
+                SET status_id = 3,
+                updated_at = "${getCurrentDate()}"
+                WHERE expense_user.expense_id = ${expense_id}
+                AND expense_user.user_id =${user_id}`;
+    const [result, _] = await db.execute(sql);
+    return result;
+}
+
 
 module.exports={addUserToExpense, 
                 getExpenseUserById, 
@@ -158,4 +189,6 @@ module.exports={addUserToExpense,
                 getSharedExpensesByUserId,
                 getDuePaymentsByUserIdAndTimeInterval,
                 getToReceiveByUserIdAndTimeInterval,
-                deleteUserByExpenseId}
+                deleteUserByExpenseId,
+                getExpenseWithDetailsById,
+                updatePaymentStatusByUserIdAndExpenseId}
