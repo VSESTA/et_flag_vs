@@ -3,7 +3,7 @@ const {getTotalAmountByTimeInterval, getTotalAmountByCategoryAndTimeInterval} = 
 const {getSharedExpenseByTimeInterval, getCashInByTimeInterval, getDuePaymentsByUserIdAndTimeInterval, getToReceiveByUserIdAndTimeInterval} = require('../models/sharedexpense.model');
 
 async function httpGetDashboard(req, res, next) {
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
     //obter datas
     let from = req.query.from;
     let to = req.query.to;
@@ -30,7 +30,7 @@ async function httpGetDashboard(req, res, next) {
 
     const debtors = await getToReceiveByUserIdAndTimeInterval(from, to, userId);
 
-    res.render('dashboard',{userId, userName,to, from, total, due_amount, cash_in, categoryTotals, duePayments, debtors});
+    res.render('dashboard',{userId, userName, isAdmin,to, from, total, due_amount, cash_in, categoryTotals, duePayments, debtors});
 }
 
 module.exports = {httpGetDashboard}

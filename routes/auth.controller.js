@@ -161,7 +161,7 @@ async function register(req, res){
 async function httpUpdateUserPassword(req, res){
     const errors =[];
     let {curr_password, new_password, confirm_password} = req.body;
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
     const {password, ...userWithoutPassword} = await getUserById(userId);
 
     //validar campos obrigatórios
@@ -188,7 +188,7 @@ async function httpUpdateUserPassword(req, res){
     }
 
     if(errors.length>0){
-        res.render('profile',{userName,
+        res.render('profile',{userName,isAdmin,
             userWithoutPassword, 
             errors})
     }else{

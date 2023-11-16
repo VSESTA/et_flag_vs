@@ -1,0 +1,74 @@
+<%- include ("./menu"); %>
+<div class="container">
+    <% if(typeof(id) === 'undefined' || id == 0){ %>
+    <h1>New Category</h1>
+    <%- include ("./flash-messages"); %>
+    <form method="post" action="/admin/category/0">
+    <div class="row">
+        <div class="col">
+            <div class="p-3 py-5">
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="name" class="labels">Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="enter name">
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="description" class="labels">Description</label>
+                        <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="form-check form-switch">
+                            <label class="form-check-label" for="is_active">Is Active</label>
+                            <input class="form-check-input" type="checkbox" name="is_active" id="is_active">
+                          </div>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <input type="submit" id="submitBtn" class="btn btn-primary profile-button me-2" value="Save Category">
+                    <a class="btn btn-secondary" href="/admin/categories" role="button">Go back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    <%}else{ %>
+    <h1>Category: <%=category.name %></h1> 
+    <%- include ("./flash-messages"); %>
+    <form method="post" action="/admin/category/<%= category.id %>">
+        <div class="row">
+            <div class="col">
+                <div class="p-3 py-5">
+                    <div class="row mt-2">
+                        <div class="col">
+                            <label for="name" class="labels">Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="enter name" value="<%=category.name %>">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <label for="description" class="labels">Description</label>
+                            <textarea class="form-control" name="description" id="description" rows="3"><%=category.description %></textarea>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" for="is_active">Is Active</label>
+                                <input class="form-check-input" type="checkbox" name="is_active" id="is_active" <%if(category.is_active === 1){ %>checked <%}%>>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <input type="submit" id="submitBtn" class="btn btn-primary profile-button me-2" value="Save Category">
+                        <a class="btn btn-secondary" href="/admin/categories" role="button">Go back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    <%} %>
+</div>

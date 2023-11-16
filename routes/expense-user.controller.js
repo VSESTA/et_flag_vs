@@ -1,10 +1,10 @@
 const { getTotalAmountByExpenseId, getExpenseById } = require('../models/expense.model');
 const {addUserToExpense, getSharedExpenseByExpenseId, deleteUserByExpenseId, getExpenseWithDetailsById,updatePaymentStatusByUserIdAndExpenseId} = require('../models/sharedexpense.model');
 const { httpGetAllStatuses } = require('./status.controller');
-const { httpGetAllUsers } = require('./user.controller');
+const { httpGetAllActiveUsers } = require('./user.controller');
 
 async function httpAddUserToExpense(req, res, next){
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
 
     const expense_id = req.params.id;
     const expense_user = {
@@ -46,17 +46,17 @@ async function httpAddUserToExpense(req, res, next){
     const expense = await getExpenseById(expense_id);
 
     //combo box users
-    const comboUsers = await httpGetAllUsers(req,res);
+    const comboUsers = await httpGetAllActiveUsers(req,res);
     //status
     const statuses = await httpGetAllStatuses(req,res);
 
     if(errors.length >0){
         const users = await getSharedExpenseByExpenseId(expense_id);
-        res.render('expense-user', {userId, userName,expense, users, statuses, comboUsers, errors});
+        res.render('expense-user', {userId, userName,isAdmin, expense, users, statuses, comboUsers, errors});
     }else{
         const result = await addUserToExpense(expense_id, expense_user.user_id, expense_user.owner_id, expense_user.amount, expense_user.status_id);
         const users = await getSharedExpenseByExpenseId(expense_id);
-        res.render('expense-user', {userId, userName,expense, users, statuses, comboUsers});
+        res.render('expense-user', {userId, userName,isAdmin,expense, users, statuses, comboUsers});
 
     }
 }
@@ -75,30 +75,30 @@ async function httpDeleteUserByExpenseId(req, res, next){
 async function httpGetAllUsersByExpenseId(req, res, next){}
 
 async function httpLoadExpenseUserPage(req,res){
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
     const expenseId = req.params.id;
     
     const expense = await getExpenseById(expenseId);
 
     //combo box users
-    const comboUsers = await httpGetAllUsers(req,res);
+    const comboUsers = await httpGetAllActiveUsers(req,res);
     //status
     const statuses = await httpGetAllStatuses(req,res);
 
     const users = await getSharedExpenseByExpenseId(expenseId);
 
-    res.render('expense-user',{userId, userName,expense, users, statuses, comboUsers})
+    res.render('expense-user',{userId, userName,isAdmin,expense, users, statuses, comboUsers})
 }
 
 async function httpGetPaymentByExpenseId(req, res, next){
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
     const expenseId = req.params.id;
 
     try {
         const expense = await getExpenseWithDetailsById(expenseId, userId);
 
         if(userId === expense.user_id){
-            return res.render('pay', {expense, userId, userName})
+            return res.render('pay', {expense, userId,isAdmin, userName})
         }else{
             return res.redirect('/dashboard');
         }
@@ -110,9 +110,8 @@ async function httpGetPaymentByExpenseId(req, res, next){
 
 
 async function httpPayExpense(req, res, next){
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
     const id = req.params.id;
-    console.log(id)
     try {
         const info = await updatePaymentStatusByUserIdAndExpenseId(id, userId)
         res.redirect('/history')

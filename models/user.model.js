@@ -4,9 +4,9 @@ const {getCurrentDate} = require('../utils/dates.utils');
 async function getAllUsers(showInactive){
     let sql;
     if(showInactive){
-         sql=`SELECT id, name, is_active FROM user`;
+         sql=`SELECT id, name, email,is_admin, is_active, created_at, updated_at FROM user`;
     }else{
-         sql=`SELECT id, name, is_active FROM user WHERE is_active = 1`;
+         sql=`SELECT id, name, email,is_admin, is_active, created_at, updated_at FROM user WHERE is_active = 1`;
     }
     const [result, ...info] = await db.execute(sql);
     return result;
@@ -65,6 +65,24 @@ const result = db.execute(sql);
 return result;
 };
 
+async function toggleUserStatus(id, status){
+    let sql = `UPDATE user
+    SET is_active = ${status},
+    updated_at = "${getCurrentDate()}"
+    WHERE id = ${id}`;
+    const result = db.execute(sql); 
+    return result;
+}
+
+async function toggleUserAdmin(id, admin){
+    let sql = `UPDATE user
+    SET is_admin = ${admin},
+    updated_at = "${getCurrentDate()}"
+    WHERE id = ${id}`;
+    const result = db.execute(sql); 
+    return result;
+}
+
 module.exports = {
     createUser, 
     checkExistingUserByEmail,
@@ -72,5 +90,7 @@ module.exports = {
     getUserById,
     getUserByEmail,
     updateUser,
-    updateUserPassword
+    updateUserPassword,
+    toggleUserStatus,
+    toggleUserAdmin
 }

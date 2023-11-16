@@ -1,16 +1,16 @@
 const { getExpenseById, addNewExpense, updateExpense, deleteExpense } = require('../models/expense.model');
 const {getSharedExpensesByUserId} = require('../models/sharedexpense.model');
-const { httpGetAllCategories } = require('./category.controller');
+const { httpGetAllActiveCategories } = require('./category.controller');
 const { httpGetAllStatuses } = require('./status.controller');
 const { getCurrentDate } = require('../utils/dates.utils');
 
 async function httpGetAllExpenses(req, res, next){
     //TO-DO:adicionar validacao do authorization
-    const {userId, userName} = req;
+    const {userId, userName,isAdmin} = req;
     try{
         const expenses = await getSharedExpensesByUserId(userId);
 
-        res.render('expense-list',{userId, userName, expenses})
+        res.render('expense-list',{userId, userName, isAdmin, expenses})
 
     }catch(error){
         console.log(error);
@@ -24,17 +24,17 @@ async function httpGetAllExpenses(req, res, next){
 
 async function httpGetExpenseById(req, res, next){
     //TO-DO:adicionar validacao do authorization
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
     const id = req.params.id;
     try{
         const expense = await getExpenseById(id);
     //categorias
-    const categories = await httpGetAllCategories(req,res);
+    const categories = await httpGetAllActiveCategories(req,res);
 
     //status
     const statuses = await httpGetAllStatuses(req,res);
 
-    res.render('expense-detail', {id, userId, userName, expense, categories, statuses});
+    res.render('expense-detail', {id, userId, userName,isAdmin, expense, categories, statuses});
 
         //Comentado porque vou usar EJS e não a criar API
         /*return res.status(200).json({
@@ -54,7 +54,7 @@ async function httpGetExpenseById(req, res, next){
  async function httpAddNewExpense(req, res, next){
     //TO-DO:adicionar validacao do authorization
 
-    const {userId, userName} = req;
+    const {userId, userName, isAdmin} = req;
     let expense = {
         name:           req.body.name,
         date:           req.body.date,
@@ -72,10 +72,10 @@ async function httpGetExpenseById(req, res, next){
 
     if(errors.length >0){
         //categorias
-        const categories = await httpGetAllCategories(req,res);
+        const categories = await httpGetAllActiveCategories(req,res);
         //status
         const statuses = await httpGetAllStatuses(req,res);
-        res.render('expense-detail', {userId, userName,expense, errors, statuses, categories});
+        res.render('expense-detail', {userId, userName,isAdmin, expense, errors, statuses, categories});
     }else{
         try {
             let newExpenseId = await addNewExpense(expense);
@@ -106,7 +106,7 @@ async function httpGetExpenseById(req, res, next){
 async function httpUpdateExpense(req, res){
     //TO-DO:adicionar validacao do authorization
     let id = req.params.id;
-    const {userId} = req;
+    const {userId, isAdmin} = req;
     let expense = {
         name:           req.body.name,
         date:           req.body.date,
@@ -172,17 +172,17 @@ async function httpLoadExpensePage(req, res, next ){
         is_split: false
     }
     //categorias
-    const categories = await httpGetAllCategories(req,res);
+    const categories = await httpGetAllActiveCategories(req,res);
 
     //status
     const statuses = await httpGetAllStatuses(req,res);
 
-    res.render('expense-detail', {userId, userName, expense, categories, statuses});
+    res.render('expense-detail', {userId, userName,isAdmin, expense, categories, statuses});
 }
 
 function validateExpenseInputs(expense){
     let errors = [];
-    if(!expense.name || !expense.date || !expense.category_id || !expense.total_amount || !expense.status_id || !expense.is_split){
+    if(!expense.name || !expense.date || !expense.category_id || !expense.total_amount || !expense.status_id ){
         errors.push({ message: 'Missing fields required'})
     }
     return errors;

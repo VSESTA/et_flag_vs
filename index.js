@@ -4,12 +4,12 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const cookieParser = require("cookie-parser");
 const db = require('./db/db');
-const authorization = require('./middleware/authorization');
 const expenseRouter = require('./routes/expense.router');
 const userRouter = require('./routes/user.router');
 const authRouter = require('./routes/auth.router');
 const historyRouter = require('./routes/history.router');
 const dashboardRouter = require('./routes/dashboard.router');
+const adminRouter = require('./routes/admin.router');
 
 //inicializar ficheiro .env
 dotenv.config();
@@ -25,7 +25,7 @@ app.use(express.json());
 //criar middleware para usar o cookieParser em todos os requests
 app.use(cookieParser());
 
-//carregar os ficheiros de css da pasta public
+//carregar os ficheiros de css e js da pasta public
 app.use(express.static(__dirname + '/public'));
 
 //EJS
@@ -52,5 +52,6 @@ app.use('/user', userRouter);
 app.use('/auth',authRouter);
 app.use('/history', historyRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/admin', adminRouter);
 
 app.listen(process.env.PORT);
