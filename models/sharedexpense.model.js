@@ -112,7 +112,7 @@ async function getExpenseUserById(id){
 }
 
 async function getDuePaymentsByUserIdAndTimeInterval(from, to, userId){
-    const sql = `SELECT user.name AS user, expense.name AS expense, expense_user.amount, expense_user.id, expense.id
+    const sql = `SELECT user.name AS user, expense.name AS expense, expense_user.amount, expense_user.id, expense.id as expenseId
                 FROM expense
                 INNER JOIN user ON expense.created_by = user.id
                 INNER JOIN expense_user ON expense.id = expense_user.expense_id

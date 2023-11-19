@@ -2,6 +2,7 @@ const express = require('express');
 const authorization = require('../middleware/authorization');
 const { httpGetAllUsers, httpResetPassword, httpSwitchStatus, httpSwitchAdmin } = require('./user.controller');
 const { httpGetAllCategories, httpGetCategoryById, httpAddCategory } = require('./category.controller');
+const {registerAdmin} = require('./auth.controller');
 
 //criar um objecto para as rotas
 const adminRouter = express.Router();
@@ -14,5 +15,6 @@ adminRouter.get('/categories',authorization,httpGetAllCategories);
 adminRouter.get('/category/:id',authorization,httpGetCategoryById);
 adminRouter.post('/category/',authorization,httpAddCategory);
 adminRouter.post('/category/:id',authorization,httpAddCategory);
-
+adminRouter.get('/register',(req,res) => res.render('register-admin'))
+adminRouter.post('/register',registerAdmin);
 module.exports= adminRouter;

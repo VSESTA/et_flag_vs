@@ -43,6 +43,20 @@ async function createUser(user){
     return result;
 };
 
+async function createAdmin(user){
+    let sql = `INSERT INTO user(name, email, password,is_admin, is_active)
+    VALUES(
+        "${user.name}",
+        "${user.email}",
+        "${user.password}",
+        "1",
+        "1"
+    )`;
+
+    const [result, ...info] = await db.execute(sql);
+    return result;
+};
+
 async function updateUser(id, user){
     let sql = `UPDATE user 
                 SET name = "${user.name}",
@@ -92,5 +106,6 @@ module.exports = {
     updateUser,
     updateUserPassword,
     toggleUserStatus,
-    toggleUserAdmin
+    toggleUserAdmin,
+    createAdmin
 }

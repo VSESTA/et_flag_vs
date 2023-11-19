@@ -30,7 +30,7 @@
         <div class="card border-success mb-3" style="max-width: 20rem;">
             <div class="card-header">To Receive:</div>
             <div class="card-body">
-              <h4 class="card-title"><%if(!cash_in){%>0.00 <%}else{%> <%=cash_in%> <%}%></h4>
+              <h4 class="card-title"><%if(!cash_in){%>0.00€ <%}else{%> <%=cash_in%>€ <%}%></h4>
             </div>
         </div>
     </div>
@@ -84,7 +84,7 @@
                         <th><%=due.user%></th>
                         <td><%=due.expense%></td>
                         <td><%=due.amount%>€</td>
-                        <td><button type="button" class="btn btn-dark">Pay</button></td>
+                        <td><a href="/expenses/<%= due.expenseId %>/pay"><i class="fa-solid fa-coins"></i></a></td>
                     </tr>
                     <%})%>
                 </tbody>

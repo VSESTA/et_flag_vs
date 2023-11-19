@@ -1,7 +1,7 @@
 const bcrypt=require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const {createUser, checkExistingUserByEmail, getUserByEmail, getUserById, updateUserPassword} = require('../models/user.model');
+const {createUser, checkExistingUserByEmail,createAdmin, getUserByEmail, getUserById, updateUserPassword} = require('../models/user.model');
 const { response } = require('express');
 
 async function login(req, res){
@@ -222,9 +222,99 @@ async function httpUpdateUserPassword(req, res){
     }
 }
 
+async function registerAdmin(req, res){
+    //obter os parâmetros do request
+    let errors =[];
+    let {name, email, password, password2} = req.body;
+    
+    //validações
+    if(!name || !email || !password || !password2){
+        errors.push({message: "Required fields missing"});
+    }
+
+    if(password.length <3 || password2.length<3){
+        errors.push({message: "Password requires a minimum of 3 characters"})
+    }
+
+    if(password !== password2){
+        errors.push({message: "Passwords do not match"})
+    }
+
+    if(errors.length > 0){
+        res.render('register-admin',{
+            errors,
+            name,
+            email,
+            password,
+            password2
+        })
+        //caso decida fazer em react
+        /*return res.status(400).json({
+            success: false,
+            errors: errors
+        })*/
+    }else{
+        //Verificar se user já existe
+        let userIsAlreadyRegistered = await checkExistingUserByEmail(email);
+
+        if(userIsAlreadyRegistered){
+            errors.push({ message: 'User is already registered'});
+            res.render('register-admin',{
+                errors,
+                name,
+                email,
+                password,
+                password2
+            })
+            //caso decida fazer em react
+            /*return res.status(409).json({
+                success: false,
+                error: "User is already registered"
+            })*/
+        }else{
+            //criar user
+            const newUser = {
+                name: name,
+                email: email,
+                password: password
+            }
+
+            //hash password
+            bcrypt.genSalt(10,(error, salt) =>{
+                bcrypt.hash(newUser.password, salt, async (err, hash) =>{
+                    if(err){
+                        throw err;
+                    }
+                    newUser.password = hash;
+                    try {
+                        let newUserDB = await createAdmin(newUser);
+                        res.redirect('/auth/login');
+
+                        //caso decida via react
+                        /*return res.status(201).json({
+                            success: true,
+                            data: newUserDB
+                        })*/
+                    } catch (error) {
+                        return res.status(500).json({
+                            success: false,
+                            error: "Internal error"
+                        })
+                    }
+                })
+
+            })
+        }
+            
+    }
+
+
+}
+
 module.exports = {
     login,
     logout,
     register,
-    httpUpdateUserPassword
+    httpUpdateUserPassword,
+    registerAdmin
 }
